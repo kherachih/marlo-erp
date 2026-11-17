@@ -2293,6 +2293,45 @@
       ],
       "inventoryProducts": [
         {
+          "id": "prod-1794951757144",
+          "sku": "TEST-NVME-7135",
+          "name": "SSD Samsung 990 Pro 4TB NVMe M.2",
+          "category": "Matériel Technique",
+          "unit": "pièce",
+          "quantity": 10,
+          "minQuantity": 4,
+          "costPrice": 280,
+          "sellingPrice": 420,
+          "location": "Baie Serveur Montage B",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-1794951729516",
+          "sku": "TEST-NVME-9508",
+          "name": "SSD Samsung 990 Pro 4TB NVMe M.2",
+          "category": "Matériel Technique",
+          "unit": "pièce",
+          "quantity": 10,
+          "minQuantity": 4,
+          "costPrice": 280,
+          "sellingPrice": 420,
+          "location": "Baie Serveur Montage B",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-1794951664209",
+          "sku": "TEST-SSD-4198",
+          "name": "SSD Samsung 990 Pro 4TB NVMe",
+          "category": "Matériel Technique",
+          "unit": "pièce",
+          "quantity": 8,
+          "minQuantity": 3,
+          "costPrice": 280,
+          "sellingPrice": 420,
+          "location": "Baie Serveur Montage B",
+          "status": "in_stock"
+        },
+        {
           "id": "prod-1",
           "sku": "SRV-NVME-2TB",
           "name": "Disque NVMe Enterprise 2To PCIe 4.0",
@@ -2359,6 +2398,72 @@
         }
       ],
       "inventoryMovements": [
+        {
+          "id": "mov-1794951757153",
+          "date": 1794951757153,
+          "productId": "prod-1794951757144",
+          "productName": "SSD Samsung 990 Pro 4TB NVMe M.2",
+          "type": "out",
+          "quantity": 5,
+          "reference": "Attribution Station Montage 4K #4",
+          "user": "Ingénieur QA",
+          "notes": "Allocation directe pour station de conformation"
+        },
+        {
+          "id": "mov-1794951757144",
+          "date": 1794951757144,
+          "productId": "prod-1794951757144",
+          "productName": "SSD Samsung 990 Pro 4TB NVMe M.2",
+          "type": "in",
+          "quantity": 15,
+          "reference": "Stock initial",
+          "user": "Administrateur QA",
+          "notes": "Initialisation de la fiche produit"
+        },
+        {
+          "id": "mov-1794951729523",
+          "date": 1794951729523,
+          "productId": "prod-1794951729516",
+          "productName": "SSD Samsung 990 Pro 4TB NVMe M.2",
+          "type": "out",
+          "quantity": 5,
+          "reference": "Attribution Station Montage 4K #4",
+          "user": "Ingénieur QA",
+          "notes": "Allocation directe pour station de conformation"
+        },
+        {
+          "id": "mov-1794951729516",
+          "date": 1794951729516,
+          "productId": "prod-1794951729516",
+          "productName": "SSD Samsung 990 Pro 4TB NVMe M.2",
+          "type": "in",
+          "quantity": 15,
+          "reference": "Stock initial",
+          "user": "Administrateur QA",
+          "notes": "Initialisation de la fiche produit"
+        },
+        {
+          "id": "mov-1794951664784",
+          "date": 1794951664784,
+          "productId": "prod-1794951664209",
+          "productName": "SSD Samsung 990 Pro 4TB NVMe",
+          "type": "out",
+          "quantity": 4,
+          "reference": "Attribution Station Montage 4K #3",
+          "user": "Ingénieur Station QA",
+          "notes": "Mise à niveau stockage montage vidéo"
+        },
+        {
+          "id": "mov-1794951664209",
+          "date": 1794951664209,
+          "productId": "prod-1794951664209",
+          "productName": "SSD Samsung 990 Pro 4TB NVMe",
+          "type": "in",
+          "quantity": 12,
+          "reference": "Stock initial",
+          "user": "Responsable QA",
+          "notes": "Initialisation de la fiche produit"
+        },
         {
           "id": "mov-1",
           "date": 1793653238427,
@@ -2429,7 +2534,7 @@
           "contractType": "CDI",
           "startDate": "2021-06-01",
           "salaryBrut": 4400,
-          "paidLeavesBalance": 18.5,
+          "paidLeavesBalance": 11.5,
           "rttBalance": 4,
           "status": "active"
         },
@@ -2443,7 +2548,7 @@
           "contractType": "CDI",
           "startDate": "2022-09-15",
           "salaryBrut": 3900,
-          "paidLeavesBalance": 14,
+          "paidLeavesBalance": 8,
           "rttBalance": 3.5,
           "status": "active"
         },
@@ -2478,6 +2583,36 @@
       ],
       "leaves": [
         {
+          "id": "leave-1794951757170",
+          "employeeId": "emp-3",
+          "employeeName": "Thomas Dubois",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-12-10",
+          "endDate": "2026-12-12",
+          "daysCount": 3,
+          "status": "approved",
+          "reason": "Congés exceptionnels de vérification QA",
+          "requestedAt": 1794951757170,
+          "approver": "Alexandre Martin (Manager)",
+          "approvedAt": 1794951757180
+        },
+        {
+          "id": "leave-1794951729540",
+          "employeeId": "emp-3",
+          "employeeName": "Thomas Dubois",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-12-10",
+          "endDate": "2026-12-12",
+          "daysCount": 3,
+          "status": "approved",
+          "reason": "Congés exceptionnels de vérification QA",
+          "requestedAt": 1794951729540,
+          "approver": "Alexandre Martin (Manager)",
+          "approvedAt": 1794951729551
+        },
+        {
           "id": "leave-1",
           "employeeId": "emp-2",
           "employeeName": "Camille Bernard",
@@ -2486,9 +2621,11 @@
           "startDate": "2026-12-22",
           "endDate": "2026-12-31",
           "daysCount": 7,
-          "status": "pending",
+          "status": "approved",
           "reason": "Congés d'hiver en famille",
-          "requestedAt": 1794691093462
+          "requestedAt": 1794691093462,
+          "approver": "Alexandre Martin (Manager)",
+          "approvedAt": 1794951664800
         },
         {
           "id": "leave-2",
@@ -2530,9 +2667,11 @@
           "type": "credit",
           "matchedEntityId": "inv-1",
           "matchedEntityType": "invoice",
-          "reconciled": false,
+          "reconciled": true,
           "aiConfidence": 99,
-          "aiReason": "Montant exact (9 100,00 €) et numéro de facture FAC-2026-001 détecté dans le libellé bancaire"
+          "aiReason": "Montant exact (9 100,00 €) et numéro de facture FAC-2026-001 détecté dans le libellé bancaire",
+          "reconciledAt": 1794951664820,
+          "reconciledBy": "IA Rapprochement Automatisé"
         },
         {
           "id": "btx-2",
@@ -2542,9 +2681,11 @@
           "type": "debit",
           "matchedEntityId": "po-1",
           "matchedEntityType": "purchase_order",
-          "reconciled": false,
+          "reconciled": true,
           "aiConfidence": 98,
-          "aiReason": "Montant exact (1 440,00 € TTC) et bénéficiaire Adobe correspondant au bon de commande PO-2026-001"
+          "aiReason": "Montant exact (1 440,00 € TTC) et bénéficiaire Adobe correspondant au bon de commande PO-2026-001",
+          "reconciledAt": 1794951729568,
+          "reconciledBy": "IA Rapprochement Automatisé"
         },
         {
           "id": "btx-3",
@@ -2566,9 +2707,11 @@
           "type": "debit",
           "matchedEntityId": "exp-1",
           "matchedEntityType": "expense",
-          "reconciled": false,
+          "reconciled": true,
           "aiConfidence": 94,
-          "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard"
+          "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard",
+          "reconciledAt": 1794951757197,
+          "reconciledBy": "IA Rapprochement Automatisé"
         }
       ]
     },
