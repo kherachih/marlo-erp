@@ -552,6 +552,170 @@ function generateStarterDataForTenant(tenant) {
     }
   ];
 
+  const vendors = [
+    {
+      id: 'ven-1',
+      name: 'AWS Cloud & Infrastructure',
+      category: 'Hébergement & Serveurs',
+      contact: 'Amazon Web Services France',
+      email: 'billing@amazon.com',
+      phone: '+33 (0)1 46 13 24 00',
+      siret: '839 210 923 00012',
+      vatNumber: 'FR 94 839210923',
+      iban: 'FR76 1000 2000 3000 0001 2345 678',
+      bic: 'BNPAFRPPXXX',
+      totalSpent: 3600,
+      activeOrders: 1
+    },
+    {
+      id: 'ven-2',
+      name: 'Adobe Systems Europe',
+      category: 'Logiciels & Licences SaaS',
+      contact: 'Support Entreprise Adobe',
+      email: 'enterprise-fr@adobe.com',
+      phone: '+33 (0)1 71 23 01 96',
+      siret: '443 218 902 00033',
+      vatNumber: 'FR 22 443218902',
+      iban: 'FR76 3000 4000 5000 9876 5432 109',
+      bic: 'SOGEFRPPXXX',
+      totalSpent: 1440,
+      activeOrders: 0
+    },
+    {
+      id: 'ven-3',
+      name: 'Studio Octane Render VFX',
+      category: 'Sous-traitance 3D & Audio',
+      contact: 'Julien Mercier',
+      email: 'contact@octane-vfx.fr',
+      phone: '+33 (0)6 12 34 56 78',
+      siret: '792 104 553 00018',
+      vatNumber: 'FR 55 792104553',
+      iban: 'FR76 2004 1010 0505 1122 3344 556',
+      bic: 'CRLYFRPPXXX',
+      totalSpent: 4500,
+      activeOrders: 1
+    },
+    {
+      id: 'ven-4',
+      name: 'Papeterie & Mobilier Studio Design',
+      category: 'Fournitures & Équipements',
+      contact: 'Service Commercial Pro',
+      email: 'pro@officedesign.fr',
+      phone: '+33 (0)1 42 68 00 11',
+      siret: '512 884 109 00045',
+      vatNumber: 'FR 11 512884109',
+      iban: 'FR76 1027 8020 0000 5566 7788 990',
+      bic: 'CCBPFRPPXXX',
+      totalSpent: 850,
+      activeOrders: 0
+    }
+  ];
+
+  const purchaseOrders = [
+    {
+      id: 'po-1',
+      number: 'PO-2026-001',
+      vendorId: 'ven-2',
+      vendorName: 'Adobe Systems Europe',
+      title: 'Abonnements annuels Suite Adobe Creative Cloud Pro',
+      date: now - 12 * day,
+      deliveryDate: now - 10 * day,
+      amountHT: 1200,
+      vatRate: 20,
+      vatAmount: 240,
+      totalTTC: 1440,
+      status: 'billed',
+      account: '606000',
+      accountName: 'Achats non stockés & Abonnements SaaS',
+      items: [
+        { description: 'Licences Adobe CC Team (All Apps) x 2', quantity: 2, unitPriceHT: 600, vatRate: 20, totalHT: 1200 }
+      ]
+    },
+    {
+      id: 'po-2',
+      number: 'PO-2026-002',
+      vendorId: 'ven-1',
+      vendorName: 'AWS Cloud & Infrastructure',
+      title: 'Cluster de rendu GPU haute performance et instances EC2 G5',
+      date: now - 6 * day,
+      deliveryDate: now + 2 * day,
+      amountHT: 2500,
+      vatRate: 20,
+      vatAmount: 500,
+      totalTTC: 3000,
+      status: 'received',
+      account: '604000',
+      accountName: 'Prestations techniques externes & Cloud',
+      items: [
+        { description: 'Réservation clusters instances GPU NVIDIA A10G (500h)', quantity: 1, unitPriceHT: 2500, vatRate: 20, totalHT: 2500 }
+      ]
+    },
+    {
+      id: 'po-3',
+      number: 'PO-2026-003',
+      vendorId: 'ven-3',
+      vendorName: 'Studio Octane Render VFX',
+      title: 'Mixage audio immersif Dolby 7.1 et sound design teaser',
+      date: now - 2 * day,
+      deliveryDate: now + 8 * day,
+      amountHT: 1800,
+      vatRate: 20,
+      vatAmount: 360,
+      totalTTC: 2160,
+      status: 'sent',
+      account: '604000',
+      accountName: 'Prestations techniques externes & Sous-traitance',
+      items: [
+        { description: 'Session mastering son immersif et bruitages cinématiques', quantity: 1, unitPriceHT: 1800, vatRate: 20, totalHT: 1800 }
+      ]
+    }
+  ];
+
+  const expenses = [
+    {
+      id: 'exp-1',
+      number: 'NDF-2026-001',
+      userId: 'mem1',
+      userName: 'Camille Bernard',
+      date: now - 5 * day,
+      category: 'Repas Client',
+      description: 'Déjeuner de cadrage et signature contrat avec l’équipe Lumina Studio',
+      amountHT: 154.17,
+      vatAmount: 30.83,
+      amountTTC: 185.00,
+      status: 'approved',
+      receipt: 'ticket_restaurant_lumina.pdf'
+    },
+    {
+      id: 'exp-2',
+      number: 'NDF-2026-002',
+      userId: 'mem2',
+      userName: 'Lucas Martin',
+      date: now - 3 * day,
+      category: 'Déplacement / Train',
+      description: 'Billets aller-retour TGV Paris-Lyon pour repérage tournage spot vidéo',
+      amountHT: 218.18,
+      vatAmount: 21.82,
+      amountTTC: 240.00,
+      status: 'reimbursed',
+      receipt: 'billet_sncf_tgv_lyon.pdf'
+    },
+    {
+      id: 'exp-3',
+      number: 'NDF-2026-003',
+      userId: 'mem2',
+      userName: 'Lucas Martin',
+      date: now - 1 * day,
+      category: 'Logiciel & Outils',
+      description: 'Licence plugin After Effects Trapcode Particular pour rendu particules',
+      amountHT: 75.00,
+      vatAmount: 15.00,
+      amountTTC: 90.00,
+      status: 'pending',
+      receipt: 'facture_redgiant_trapcode.pdf'
+    }
+  ];
+
   const members = [
     {
       id: 'owner',
@@ -867,6 +1031,9 @@ function generateStarterDataForTenant(tenant) {
     tasks,
     invoices,
     quotes,
+    vendors,
+    purchaseOrders,
+    expenses,
     crmLeads,
     accountingEntries,
     chartOfAccounts: DEFAULT_CHART_OF_ACCOUNTS,

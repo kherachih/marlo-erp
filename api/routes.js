@@ -979,6 +979,253 @@ async function handleApiRequest(req, res) {
     });
   }
 
+  // ==========================================
+  // ACHATS, NOTES DE FRAIS & FOURNISSEURS (OPTION D)
+  // ==========================================
+
+  // GET /api/tenants/:id/purchases
+  const purchasesMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/purchases$/);
+  if (purchasesMatch && method === 'GET') {
+    const tenantId = purchasesMatch[1];
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const orders = tenantData.purchaseOrders || [];
+    const expenses = tenantData.expenses || [];
+    const vendors = tenantData.vendors || [];
+
+    const totalSpentHT = orders
+      .filter(o => o.status === 'billed' || o.status === 'received')
+      .reduce((sum, o) => sum + (Number(o.amountHT) || 0), 0) +
+      expenses
+      .filter(e => e.status === 'approved' || e.status === 'reimbursed')
+      .reduce((sum, e) => sum + (Number(e.amountHT) || 0), 0);
+
+    const pendingOrdersCount = orders.filter(o => o.status === 'draft' || o.status === 'sent').length;
+    const pendingExpensesCount = expenses.filter(e => e.status === 'pending').length;
+
+    return sendJson(200, {
+      success: true,
+      orders,
+      expenses,
+      vendors,
+      currency: tenant.currency || 'EUR',
+      kpis: {
+        totalSpentHT,
+        pendingOrdersCount,
+        pendingExpensesCount,
+        vendorsCount: vendors.length
+      }
+    });
+  }
+
+  // POST /api/tenants/:id/purchases/orders (Créer un bon de commande)
+  const createOrderMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/purchases\/orders$/);
+  if (createOrderMatch && method === 'POST') {
+    const tenantId = createOrderMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const body = await parseBody();
+    tenantData.purchaseOrders = tenantData.purchaseOrders || [];
+
+    const nextNum = (tenantData.purchaseOrders.length + 1).toString().padStart(3, '0');
+    const orderNumber = `PO-2026-${nextNum}`;
+    const ht = Number(body.amountHT) || 0;
+    const rate = Number(body.vatRate) || 20;
+    const vat = Math.round(ht * (rate / 100) * 100) / 100;
+
+    const newOrder = {
+      id: `po-${Date.now()}`,
+      number: orderNumber,
+      vendorId: body.vendorId || 'ven-1',
+      vendorName: body.vendorName || 'Fournisseur Externe',
+      title: body.title || 'Commande de fournitures / prestations',
+      date: Date.now(),
+      deliveryDate: body.deliveryDate ? new Date(body.deliveryDate).getTime() : (Date.now() + 7 * 86400000),
+      amountHT: ht,
+      vatRate: rate,
+      vatAmount: vat,
+      totalTTC: ht + vat,
+      status: 'sent',
+      account: body.account || '606000',
+      accountName: body.accountName || 'Achats & Fournitures',
+      items: [
+        { description: body.title || 'Ligne de commande', quantity: 1, unitPriceHT: ht, vatRate: rate, totalHT: ht }
+      ]
+    };
+
+    tenantData.purchaseOrders.unshift(newOrder);
+    writeDb(db);
+
+    return sendJson(201, { success: true, message: 'Bon de commande créé', order: newOrder });
+  }
+
+  // POST /api/tenants/:id/purchases/orders/:orderId/bill (Valider la facture fournisseur & Écriture comptable)
+  const billOrderMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/purchases\/orders\/([a-zA-Z0-9_-]+)\/bill$/);
+  if (billOrderMatch && method === 'POST') {
+    const [_, tenantId, orderId] = billOrderMatch;
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.purchaseOrders = tenantData.purchaseOrders || [];
+    tenantData.accountingEntries = tenantData.accountingEntries || [];
+
+    const order = tenantData.purchaseOrders.find(o => o.id === orderId);
+    if (!order) return sendJson(404, { success: false, error: 'Commande introuvable' });
+
+    order.status = 'billed';
+    order.billedAt = Date.now();
+
+    // Passer automatiquement l'écriture en partie double dans le journal des Achats (AC)
+    const dStr = new Date().toISOString().split('T')[0];
+    const ecrBase = tenantData.accountingEntries.length + 1;
+
+    tenantData.accountingEntries.push(
+      {
+        id: `entry-${Date.now()}-1`,
+        num: `ECR${ecrBase.toString().padStart(5, '0')}`,
+        journal: 'AC',
+        journalName: 'Achats',
+        date: dStr,
+        piece: order.number,
+        account: order.account || '606000',
+        accountName: order.accountName || 'Achats non stockés',
+        label: `Facture ${order.vendorName} - ${order.title}`,
+        debit: order.amountHT,
+        credit: 0,
+        reconciled: false
+      },
+      {
+        id: `entry-${Date.now()}-2`,
+        num: `ECR${(ecrBase + 1).toString().padStart(5, '0')}`,
+        journal: 'AC',
+        journalName: 'Achats',
+        date: dStr,
+        piece: order.number,
+        account: '445660',
+        accountName: 'TVA Déductible sur biens et services (20%)',
+        label: `TVA déductible s/ ${order.number}`,
+        debit: order.vatAmount,
+        credit: 0,
+        reconciled: false
+      },
+      {
+        id: `entry-${Date.now()}-3`,
+        num: `ECR${(ecrBase + 2).toString().padStart(5, '0')}`,
+        journal: 'AC',
+        journalName: 'Achats',
+        date: dStr,
+        piece: order.number,
+        account: '401000',
+        accountName: 'Fournisseurs d\'exploitation',
+        label: `Dette ${order.vendorName} - ${order.number}`,
+        debit: 0,
+        credit: order.totalTTC,
+        reconciled: false
+      }
+    );
+
+    writeDb(db);
+    return sendJson(200, {
+      success: true,
+      message: 'Facture fournisseur validée et comptabilisée dans le Journal des Achats (AC)',
+      order
+    });
+  }
+
+  // POST /api/tenants/:id/purchases/expenses (Déposer une note de frais)
+  const createExpMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/purchases\/expenses$/);
+  if (createExpMatch && method === 'POST') {
+    const tenantId = createExpMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const body = await parseBody();
+    tenantData.expenses = tenantData.expenses || [];
+
+    const nextNum = (tenantData.expenses.length + 1).toString().padStart(3, '0');
+    const ttc = Number(body.amountTTC) || 0;
+    const ht = Math.round((ttc / 1.2) * 100) / 100;
+    const vat = Math.round((ttc - ht) * 100) / 100;
+
+    const newExp = {
+      id: `exp-${Date.now()}`,
+      number: `NDF-2026-${nextNum}`,
+      userId: body.userId || 'mem2',
+      userName: body.userName || 'Lucas Martin',
+      date: Date.now(),
+      category: body.category || 'Frais de mission',
+      description: body.description || 'Dépense professionnelle engagée',
+      amountHT: ht,
+      vatAmount: vat,
+      amountTTC: ttc,
+      status: 'pending',
+      receipt: body.receipt || 'recu_justificatif.pdf'
+    };
+
+    tenantData.expenses.unshift(newExp);
+    writeDb(db);
+
+    return sendJson(201, { success: true, message: 'Note de frais enregistrée', expense: newExp });
+  }
+
+  // POST /api/tenants/:id/purchases/expenses/:expId/approve
+  const approveExpMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/purchases\/expenses\/([a-zA-Z0-9_-]+)\/approve$/);
+  if (approveExpMatch && method === 'POST') {
+    const [_, tenantId, expId] = approveExpMatch;
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.expenses = tenantData.expenses || [];
+    const exp = tenantData.expenses.find(e => e.id === expId);
+    if (!exp) return sendJson(404, { success: false, error: 'Note de frais introuvable' });
+
+    exp.status = 'approved';
+    exp.approvedAt = Date.now();
+
+    writeDb(db);
+    return sendJson(200, { success: true, message: 'Note de frais approuvée', expense: exp });
+  }
+
+  // POST /api/tenants/:id/purchases/vendors
+  const createVendorMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/purchases\/vendors$/);
+  if (createVendorMatch && method === 'POST') {
+    const tenantId = createVendorMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const body = await parseBody();
+    tenantData.vendors = tenantData.vendors || [];
+
+    const newVen = {
+      id: `ven-${Date.now()}`,
+      name: body.name || 'Nouveau Fournisseur',
+      category: body.category || 'Services & Prestations',
+      contact: body.contact || 'Service Comptabilité Fournisseurs',
+      email: body.email || 'compta@fournisseur.com',
+      phone: body.phone || '+33 (0)1 00 00 00 00',
+      siret: body.siret || '000 000 000 00000',
+      vatNumber: body.vatNumber || 'FR 00 000000000',
+      iban: body.iban || 'FR76 0000 0000 0000 0000 0000 000',
+      bic: body.bic || 'BANKFRPPXXX',
+      totalSpent: 0,
+      activeOrders: 0
+    };
+
+    tenantData.vendors.unshift(newVen);
+    writeDb(db);
+
+    return sendJson(201, { success: true, message: 'Fournisseur ajouté', vendor: newVen });
+  }
+
   // 404 Route API
   return sendJson(404, { success: false, error: 'Route API introuvable' });
 }

@@ -258,8 +258,8 @@
   }
 
   const ROLE_PERMISSIONS = {
-    admin: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'inbox', 'apps', 'settings'],
-    manager: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'inbox'],
+    admin: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'purchases', 'inbox', 'apps', 'settings'],
+    manager: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'purchases', 'inbox'],
     member: ['overview', 'tasks', 'projects', 'calendar', 'team', 'activity', 'inbox']
   };
 
@@ -276,7 +276,7 @@
     const role = currentUser.rbacRole || 'admin';
     const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
 
-    const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'inbox'];
+    const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'purchases', 'inbox'];
 
     managedModules.forEach(modId => {
       const link = document.querySelector(`.side a.snav__item[data-id="${modId}"]`);
@@ -339,7 +339,7 @@
     const role = currentUser.rbacRole || 'admin';
     const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
 
-    if (hash && ['accounting', 'settings', 'budget', 'crm'].includes(hash) && !allowed.includes(hash)) {
+    if (hash && ['accounting', 'purchases', 'settings', 'budget', 'crm'].includes(hash) && !allowed.includes(hash)) {
       console.warn(`[RBAC] Accès restreint à #${hash} pour le profil ${role}`);
       location.hash = '#/overview';
     }
@@ -363,7 +363,8 @@
       { id: 'tasks', title: 'Organisation des Tâches (Kanban)', mod: 'tasks', cat: 'Opérations', desc: 'Tableau visuel interactif glisser-déposer' },
       { id: 'team', title: 'Équipe & Feuilles d\'Heures (Timesheets)', mod: 'team', cat: 'RH', desc: 'Capacité, charge de travail et rentabilité' },
       { id: 'calendar', title: 'Réservation de Salles & Équipements', mod: 'calendar', cat: 'Opérations', desc: 'Planning d\'occupation des studios et postes' },
-      { id: 'accounting', title: 'Comptabilité Générale & Fiscalité', mod: 'accounting', cat: 'Finance', desc: 'Grand livre, journaux et suivi de la TVA' }
+      { id: 'accounting', title: 'Comptabilité Générale & Fiscalité', mod: 'accounting', cat: 'Finance', desc: 'Grand livre, journaux et suivi de la TVA' },
+      { id: 'purchases', title: 'Achats, Dépenses & Fournisseurs', mod: 'purchases', cat: 'Finance', desc: 'Bons de commande, notes de frais et annuaire fournisseurs' }
     ];
 
     const ALL_MODS = [
@@ -375,6 +376,7 @@
       { id: 'team', name: 'Équipe & Workload', cat: 'RH' },
       { id: 'budget', name: 'Factures & Devis', cat: 'Finance' },
       { id: 'accounting', name: 'Comptabilité', cat: 'Finance' },
+      { id: 'purchases', name: 'Achats & Fournisseurs', cat: 'Finance' },
       { id: 'activity', name: 'Journal d\'Activité', cat: 'Communication' },
       { id: 'inbox', name: 'Boîte de Réception', cat: 'Communication' }
     ];

@@ -17,7 +17,8 @@
         "budget",
         "inbox",
         "calendar",
-        "accounting"
+        "accounting",
+        "purchases"
       ],
       "createdAt": "2026-11-01T08:00:00.000Z"
     },
@@ -35,7 +36,8 @@
         "team",
         "budget",
         "crm",
-        "accounting"
+        "accounting",
+        "purchases"
       ],
       "createdAt": "2026-11-10T10:30:00.000Z"
     },
@@ -53,7 +55,8 @@
         "team",
         "budget",
         "accounting",
-        "inbox"
+        "inbox",
+        "purchases"
       ],
       "createdAt": "2026-11-12T14:15:00.000Z"
     },
@@ -73,7 +76,8 @@
         "budget",
         "activity",
         "inbox",
-        "accounting"
+        "accounting",
+        "purchases"
       ],
       "createdAt": "2026-11-16T18:27:02.679Z"
     },
@@ -103,7 +107,8 @@
         "team",
         "budget",
         "activity",
-        "accounting"
+        "accounting",
+        "purchases"
       ],
       "createdAt": "2026-11-17T06:35:49.506Z"
     }
@@ -795,6 +800,185 @@
             }
           ]
         }
+      ],
+      "vendors": [
+        {
+          "id": "ven-1",
+          "name": "AWS Cloud & Infrastructure",
+          "category": "Hébergement & Serveurs",
+          "contact": "Amazon Web Services France",
+          "email": "billing@amazon.com",
+          "phone": "+33 (0)1 46 13 24 00",
+          "siret": "839 210 923 00012",
+          "vatNumber": "FR 94 839210923",
+          "iban": "FR76 1000 2000 3000 0001 2345 678",
+          "bic": "BNPAFRPPXXX",
+          "totalSpent": 3600,
+          "activeOrders": 1
+        },
+        {
+          "id": "ven-2",
+          "name": "Adobe Systems Europe",
+          "category": "Logiciels & Licences SaaS",
+          "contact": "Support Entreprise Adobe",
+          "email": "enterprise-fr@adobe.com",
+          "phone": "+33 (0)1 71 23 01 96",
+          "siret": "443 218 902 00033",
+          "vatNumber": "FR 22 443218902",
+          "iban": "FR76 3000 4000 5000 9876 5432 109",
+          "bic": "SOGEFRPPXXX",
+          "totalSpent": 1440,
+          "activeOrders": 0
+        },
+        {
+          "id": "ven-3",
+          "name": "Studio Octane Render VFX",
+          "category": "Sous-traitance 3D & Audio",
+          "contact": "Julien Mercier",
+          "email": "contact@octane-vfx.fr",
+          "phone": "+33 (0)6 12 34 56 78",
+          "siret": "792 104 553 00018",
+          "vatNumber": "FR 55 792104553",
+          "iban": "FR76 2004 1010 0505 1122 3344 556",
+          "bic": "CRLYFRPPXXX",
+          "totalSpent": 4500,
+          "activeOrders": 1
+        },
+        {
+          "id": "ven-4",
+          "name": "Papeterie & Mobilier Studio Design",
+          "category": "Fournitures & Équipements",
+          "contact": "Service Commercial Pro",
+          "email": "pro@officedesign.fr",
+          "phone": "+33 (0)1 42 68 00 11",
+          "siret": "512 884 109 00045",
+          "vatNumber": "FR 11 512884109",
+          "iban": "FR76 1027 8020 0000 5566 7788 990",
+          "bic": "CCBPFRPPXXX",
+          "totalSpent": 850,
+          "activeOrders": 0
+        }
+      ],
+      "purchaseOrders": [
+        {
+          "id": "po-1",
+          "number": "PO-2026-001",
+          "vendorId": "ven-2",
+          "vendorName": "Adobe Systems Europe",
+          "title": "Abonnements annuels Suite Adobe Creative Cloud Pro",
+          "date": 1793903623183,
+          "deliveryDate": 1794076423183,
+          "amountHT": 1200,
+          "vatRate": 20,
+          "vatAmount": 240,
+          "totalTTC": 1440,
+          "status": "billed",
+          "account": "606000",
+          "accountName": "Achats non stockés & Abonnements SaaS",
+          "items": [
+            {
+              "description": "Licences Adobe CC Team (All Apps) x 2",
+              "quantity": 2,
+              "unitPriceHT": 600,
+              "vatRate": 20,
+              "totalHT": 1200
+            }
+          ]
+        },
+        {
+          "id": "po-2",
+          "number": "PO-2026-002",
+          "vendorId": "ven-1",
+          "vendorName": "AWS Cloud & Infrastructure",
+          "title": "Cluster de rendu GPU haute performance et instances EC2 G5",
+          "date": 1794422023183,
+          "deliveryDate": 1795113223183,
+          "amountHT": 2500,
+          "vatRate": 20,
+          "vatAmount": 500,
+          "totalTTC": 3000,
+          "status": "received",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Cloud",
+          "items": [
+            {
+              "description": "Réservation clusters instances GPU NVIDIA A10G (500h)",
+              "quantity": 1,
+              "unitPriceHT": 2500,
+              "vatRate": 20,
+              "totalHT": 2500
+            }
+          ]
+        },
+        {
+          "id": "po-3",
+          "number": "PO-2026-003",
+          "vendorId": "ven-3",
+          "vendorName": "Studio Octane Render VFX",
+          "title": "Mixage audio immersif Dolby 7.1 et sound design teaser",
+          "date": 1794767623183,
+          "deliveryDate": 1795631623183,
+          "amountHT": 1800,
+          "vatRate": 20,
+          "vatAmount": 360,
+          "totalTTC": 2160,
+          "status": "sent",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Sous-traitance",
+          "items": [
+            {
+              "description": "Session mastering son immersif et bruitages cinématiques",
+              "quantity": 1,
+              "unitPriceHT": 1800,
+              "vatRate": 20,
+              "totalHT": 1800
+            }
+          ]
+        }
+      ],
+      "expenses": [
+        {
+          "id": "exp-1",
+          "number": "NDF-2026-001",
+          "userId": "mem1",
+          "userName": "Camille Bernard",
+          "date": 1794508423183,
+          "category": "Repas Client",
+          "description": "Déjeuner de cadrage et signature contrat avec l’équipe Lumina Studio",
+          "amountHT": 154.17,
+          "vatAmount": 30.83,
+          "amountTTC": 185,
+          "status": "approved",
+          "receipt": "ticket_restaurant_lumina.pdf"
+        },
+        {
+          "id": "exp-2",
+          "number": "NDF-2026-002",
+          "userId": "mem2",
+          "userName": "Lucas Martin",
+          "date": 1794681223183,
+          "category": "Déplacement / Train",
+          "description": "Billets aller-retour TGV Paris-Lyon pour repérage tournage spot vidéo",
+          "amountHT": 218.18,
+          "vatAmount": 21.82,
+          "amountTTC": 240,
+          "status": "reimbursed",
+          "receipt": "billet_sncf_tgv_lyon.pdf"
+        },
+        {
+          "id": "exp-3",
+          "number": "NDF-2026-003",
+          "userId": "mem2",
+          "userName": "Lucas Martin",
+          "date": 1794854023183,
+          "category": "Logiciel & Outils",
+          "description": "Licence plugin After Effects Trapcode Particular pour rendu particules",
+          "amountHT": 75,
+          "vatAmount": 15,
+          "amountTTC": 90,
+          "status": "pending",
+          "receipt": "facture_redgiant_trapcode.pdf"
+        }
       ]
     },
     "northbank-post": {
@@ -1343,6 +1527,48 @@
           "debit": 0,
           "credit": 2417,
           "reconciled": false
+        },
+        {
+          "id": "entry-1794947385695-1",
+          "num": "ECR00019",
+          "journal": "AC",
+          "journalName": "Achats",
+          "date": "2026-11-17",
+          "piece": "PO-2026-002",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Cloud",
+          "label": "Facture AWS Cloud & Infrastructure - Cluster de rendu GPU haute performance et instances EC2 G5",
+          "debit": 2500,
+          "credit": 0,
+          "reconciled": false
+        },
+        {
+          "id": "entry-1794947385695-2",
+          "num": "ECR00020",
+          "journal": "AC",
+          "journalName": "Achats",
+          "date": "2026-11-17",
+          "piece": "PO-2026-002",
+          "account": "445660",
+          "accountName": "TVA Déductible sur biens et services (20%)",
+          "label": "TVA déductible s/ PO-2026-002",
+          "debit": 500,
+          "credit": 0,
+          "reconciled": false
+        },
+        {
+          "id": "entry-1794947385695-3",
+          "num": "ECR00021",
+          "journal": "AC",
+          "journalName": "Achats",
+          "date": "2026-11-17",
+          "piece": "PO-2026-002",
+          "account": "401000",
+          "accountName": "Fournisseurs d'exploitation",
+          "label": "Dette AWS Cloud & Infrastructure - PO-2026-002",
+          "debit": 0,
+          "credit": 3000,
+          "reconciled": false
         }
       ],
       "chartOfAccounts": [
@@ -1542,6 +1768,186 @@
             }
           ],
           "acceptedAt": 1794924228449
+        }
+      ],
+      "vendors": [
+        {
+          "id": "ven-1",
+          "name": "AWS Cloud & Infrastructure",
+          "category": "Hébergement & Serveurs",
+          "contact": "Amazon Web Services France",
+          "email": "billing@amazon.com",
+          "phone": "+33 (0)1 46 13 24 00",
+          "siret": "839 210 923 00012",
+          "vatNumber": "FR 94 839210923",
+          "iban": "FR76 1000 2000 3000 0001 2345 678",
+          "bic": "BNPAFRPPXXX",
+          "totalSpent": 3600,
+          "activeOrders": 1
+        },
+        {
+          "id": "ven-2",
+          "name": "Adobe Systems Europe",
+          "category": "Logiciels & Licences SaaS",
+          "contact": "Support Entreprise Adobe",
+          "email": "enterprise-fr@adobe.com",
+          "phone": "+33 (0)1 71 23 01 96",
+          "siret": "443 218 902 00033",
+          "vatNumber": "FR 22 443218902",
+          "iban": "FR76 3000 4000 5000 9876 5432 109",
+          "bic": "SOGEFRPPXXX",
+          "totalSpent": 1440,
+          "activeOrders": 0
+        },
+        {
+          "id": "ven-3",
+          "name": "Studio Octane Render VFX",
+          "category": "Sous-traitance 3D & Audio",
+          "contact": "Julien Mercier",
+          "email": "contact@octane-vfx.fr",
+          "phone": "+33 (0)6 12 34 56 78",
+          "siret": "792 104 553 00018",
+          "vatNumber": "FR 55 792104553",
+          "iban": "FR76 2004 1010 0505 1122 3344 556",
+          "bic": "CRLYFRPPXXX",
+          "totalSpent": 4500,
+          "activeOrders": 1
+        },
+        {
+          "id": "ven-4",
+          "name": "Papeterie & Mobilier Studio Design",
+          "category": "Fournitures & Équipements",
+          "contact": "Service Commercial Pro",
+          "email": "pro@officedesign.fr",
+          "phone": "+33 (0)1 42 68 00 11",
+          "siret": "512 884 109 00045",
+          "vatNumber": "FR 11 512884109",
+          "iban": "FR76 1027 8020 0000 5566 7788 990",
+          "bic": "CCBPFRPPXXX",
+          "totalSpent": 850,
+          "activeOrders": 0
+        }
+      ],
+      "purchaseOrders": [
+        {
+          "id": "po-1",
+          "number": "PO-2026-001",
+          "vendorId": "ven-2",
+          "vendorName": "Adobe Systems Europe",
+          "title": "Abonnements annuels Suite Adobe Creative Cloud Pro",
+          "date": 1793903623181,
+          "deliveryDate": 1794076423181,
+          "amountHT": 1200,
+          "vatRate": 20,
+          "vatAmount": 240,
+          "totalTTC": 1440,
+          "status": "billed",
+          "account": "606000",
+          "accountName": "Achats non stockés & Abonnements SaaS",
+          "items": [
+            {
+              "description": "Licences Adobe CC Team (All Apps) x 2",
+              "quantity": 2,
+              "unitPriceHT": 600,
+              "vatRate": 20,
+              "totalHT": 1200
+            }
+          ]
+        },
+        {
+          "id": "po-2",
+          "number": "PO-2026-002",
+          "vendorId": "ven-1",
+          "vendorName": "AWS Cloud & Infrastructure",
+          "title": "Cluster de rendu GPU haute performance et instances EC2 G5",
+          "date": 1794422023181,
+          "deliveryDate": 1795113223181,
+          "amountHT": 2500,
+          "vatRate": 20,
+          "vatAmount": 500,
+          "totalTTC": 3000,
+          "status": "billed",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Cloud",
+          "items": [
+            {
+              "description": "Réservation clusters instances GPU NVIDIA A10G (500h)",
+              "quantity": 1,
+              "unitPriceHT": 2500,
+              "vatRate": 20,
+              "totalHT": 2500
+            }
+          ],
+          "billedAt": 1794947385695
+        },
+        {
+          "id": "po-3",
+          "number": "PO-2026-003",
+          "vendorId": "ven-3",
+          "vendorName": "Studio Octane Render VFX",
+          "title": "Mixage audio immersif Dolby 7.1 et sound design teaser",
+          "date": 1794767623181,
+          "deliveryDate": 1795631623181,
+          "amountHT": 1800,
+          "vatRate": 20,
+          "vatAmount": 360,
+          "totalTTC": 2160,
+          "status": "sent",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Sous-traitance",
+          "items": [
+            {
+              "description": "Session mastering son immersif et bruitages cinématiques",
+              "quantity": 1,
+              "unitPriceHT": 1800,
+              "vatRate": 20,
+              "totalHT": 1800
+            }
+          ]
+        }
+      ],
+      "expenses": [
+        {
+          "id": "exp-1",
+          "number": "NDF-2026-001",
+          "userId": "mem1",
+          "userName": "Camille Bernard",
+          "date": 1794508423181,
+          "category": "Repas Client",
+          "description": "Déjeuner de cadrage et signature contrat avec l’équipe Lumina Studio",
+          "amountHT": 154.17,
+          "vatAmount": 30.83,
+          "amountTTC": 185,
+          "status": "approved",
+          "receipt": "ticket_restaurant_lumina.pdf"
+        },
+        {
+          "id": "exp-2",
+          "number": "NDF-2026-002",
+          "userId": "mem2",
+          "userName": "Lucas Martin",
+          "date": 1794681223181,
+          "category": "Déplacement / Train",
+          "description": "Billets aller-retour TGV Paris-Lyon pour repérage tournage spot vidéo",
+          "amountHT": 218.18,
+          "vatAmount": 21.82,
+          "amountTTC": 240,
+          "status": "reimbursed",
+          "receipt": "billet_sncf_tgv_lyon.pdf"
+        },
+        {
+          "id": "exp-3",
+          "number": "NDF-2026-003",
+          "userId": "mem2",
+          "userName": "Lucas Martin",
+          "date": 1794854023181,
+          "category": "Logiciel & Outils",
+          "description": "Licence plugin After Effects Trapcode Particular pour rendu particules",
+          "amountHT": 75,
+          "vatAmount": 15,
+          "amountTTC": 90,
+          "status": "pending",
+          "receipt": "facture_redgiant_trapcode.pdf"
         }
       ]
     },
@@ -2217,6 +2623,185 @@
               "totalHT": 7583.33
             }
           ]
+        }
+      ],
+      "vendors": [
+        {
+          "id": "ven-1",
+          "name": "AWS Cloud & Infrastructure",
+          "category": "Hébergement & Serveurs",
+          "contact": "Amazon Web Services France",
+          "email": "billing@amazon.com",
+          "phone": "+33 (0)1 46 13 24 00",
+          "siret": "839 210 923 00012",
+          "vatNumber": "FR 94 839210923",
+          "iban": "FR76 1000 2000 3000 0001 2345 678",
+          "bic": "BNPAFRPPXXX",
+          "totalSpent": 3600,
+          "activeOrders": 1
+        },
+        {
+          "id": "ven-2",
+          "name": "Adobe Systems Europe",
+          "category": "Logiciels & Licences SaaS",
+          "contact": "Support Entreprise Adobe",
+          "email": "enterprise-fr@adobe.com",
+          "phone": "+33 (0)1 71 23 01 96",
+          "siret": "443 218 902 00033",
+          "vatNumber": "FR 22 443218902",
+          "iban": "FR76 3000 4000 5000 9876 5432 109",
+          "bic": "SOGEFRPPXXX",
+          "totalSpent": 1440,
+          "activeOrders": 0
+        },
+        {
+          "id": "ven-3",
+          "name": "Studio Octane Render VFX",
+          "category": "Sous-traitance 3D & Audio",
+          "contact": "Julien Mercier",
+          "email": "contact@octane-vfx.fr",
+          "phone": "+33 (0)6 12 34 56 78",
+          "siret": "792 104 553 00018",
+          "vatNumber": "FR 55 792104553",
+          "iban": "FR76 2004 1010 0505 1122 3344 556",
+          "bic": "CRLYFRPPXXX",
+          "totalSpent": 4500,
+          "activeOrders": 1
+        },
+        {
+          "id": "ven-4",
+          "name": "Papeterie & Mobilier Studio Design",
+          "category": "Fournitures & Équipements",
+          "contact": "Service Commercial Pro",
+          "email": "pro@officedesign.fr",
+          "phone": "+33 (0)1 42 68 00 11",
+          "siret": "512 884 109 00045",
+          "vatNumber": "FR 11 512884109",
+          "iban": "FR76 1027 8020 0000 5566 7788 990",
+          "bic": "CCBPFRPPXXX",
+          "totalSpent": 850,
+          "activeOrders": 0
+        }
+      ],
+      "purchaseOrders": [
+        {
+          "id": "po-1",
+          "number": "PO-2026-001",
+          "vendorId": "ven-2",
+          "vendorName": "Adobe Systems Europe",
+          "title": "Abonnements annuels Suite Adobe Creative Cloud Pro",
+          "date": 1793903623183,
+          "deliveryDate": 1794076423183,
+          "amountHT": 1200,
+          "vatRate": 20,
+          "vatAmount": 240,
+          "totalTTC": 1440,
+          "status": "billed",
+          "account": "606000",
+          "accountName": "Achats non stockés & Abonnements SaaS",
+          "items": [
+            {
+              "description": "Licences Adobe CC Team (All Apps) x 2",
+              "quantity": 2,
+              "unitPriceHT": 600,
+              "vatRate": 20,
+              "totalHT": 1200
+            }
+          ]
+        },
+        {
+          "id": "po-2",
+          "number": "PO-2026-002",
+          "vendorId": "ven-1",
+          "vendorName": "AWS Cloud & Infrastructure",
+          "title": "Cluster de rendu GPU haute performance et instances EC2 G5",
+          "date": 1794422023183,
+          "deliveryDate": 1795113223183,
+          "amountHT": 2500,
+          "vatRate": 20,
+          "vatAmount": 500,
+          "totalTTC": 3000,
+          "status": "received",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Cloud",
+          "items": [
+            {
+              "description": "Réservation clusters instances GPU NVIDIA A10G (500h)",
+              "quantity": 1,
+              "unitPriceHT": 2500,
+              "vatRate": 20,
+              "totalHT": 2500
+            }
+          ]
+        },
+        {
+          "id": "po-3",
+          "number": "PO-2026-003",
+          "vendorId": "ven-3",
+          "vendorName": "Studio Octane Render VFX",
+          "title": "Mixage audio immersif Dolby 7.1 et sound design teaser",
+          "date": 1794767623183,
+          "deliveryDate": 1795631623183,
+          "amountHT": 1800,
+          "vatRate": 20,
+          "vatAmount": 360,
+          "totalTTC": 2160,
+          "status": "sent",
+          "account": "604000",
+          "accountName": "Prestations techniques externes & Sous-traitance",
+          "items": [
+            {
+              "description": "Session mastering son immersif et bruitages cinématiques",
+              "quantity": 1,
+              "unitPriceHT": 1800,
+              "vatRate": 20,
+              "totalHT": 1800
+            }
+          ]
+        }
+      ],
+      "expenses": [
+        {
+          "id": "exp-1",
+          "number": "NDF-2026-001",
+          "userId": "mem1",
+          "userName": "Camille Bernard",
+          "date": 1794508423183,
+          "category": "Repas Client",
+          "description": "Déjeuner de cadrage et signature contrat avec l’équipe Lumina Studio",
+          "amountHT": 154.17,
+          "vatAmount": 30.83,
+          "amountTTC": 185,
+          "status": "approved",
+          "receipt": "ticket_restaurant_lumina.pdf"
+        },
+        {
+          "id": "exp-2",
+          "number": "NDF-2026-002",
+          "userId": "mem2",
+          "userName": "Lucas Martin",
+          "date": 1794681223183,
+          "category": "Déplacement / Train",
+          "description": "Billets aller-retour TGV Paris-Lyon pour repérage tournage spot vidéo",
+          "amountHT": 218.18,
+          "vatAmount": 21.82,
+          "amountTTC": 240,
+          "status": "reimbursed",
+          "receipt": "billet_sncf_tgv_lyon.pdf"
+        },
+        {
+          "id": "exp-3",
+          "number": "NDF-2026-003",
+          "userId": "mem2",
+          "userName": "Lucas Martin",
+          "date": 1794854023183,
+          "category": "Logiciel & Outils",
+          "description": "Licence plugin After Effects Trapcode Particular pour rendu particules",
+          "amountHT": 75,
+          "vatAmount": 15,
+          "amountTTC": 90,
+          "status": "pending",
+          "receipt": "facture_redgiant_trapcode.pdf"
         }
       ]
     }
