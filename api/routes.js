@@ -1,4 +1,4 @@
-const { readDb, writeDb, CATALOG_MODULES, PRESETS, generateStarterDataForTenant } = require('./db');
+const { readDb, writeDb, CATALOG_MODULES, PRESETS, DEFAULT_CHART_OF_ACCOUNTS, generateStarterDataForTenant } = require('./db');
 
 function handleApiRequest(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
@@ -382,6 +382,223 @@ function handleApiRequest(req, res) {
       writeDb(db);
       return sendJson(200, { success: true, message: 'Données enregistrées avec succès' });
     });
+  }
+
+  // 14. GET /api/tenants/:id/accounting : Données comptables complètes (Grand Livre, Plan de comptes, TVA, KPIs)
+  const acctMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_\-]+)\/accounting$/);
+  if (acctMatch && method === 'GET') {
+    const tenantId = acctMatch[1];
+    const db = readDb();
+    if (!db.tenantsData) db.tenantsData = {};
+    const tenant = db.tenants.find(t => t.id === tenantId || t.slug === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    let tData = db.tenantsData[tenant.id];
+    if (!tData) {
+      tData = generateStarterDataForTenant(tenant);
+      db.tenantsData[tenant.id] = tData;
+      writeDb(db);
+    }
+
+    if (!tData.accountingEntries || !Array.isArray(tData.accountingEntries)) {
+      const fresh = generateStarterDataForTenant(tenant);
+      tData.accountingEntries = fresh.accountingEntries;
+      tData.chartOfAccounts = fresh.chartOfAccounts;
+      db.tenantsData[tenant.id] = tData;
+      writeDb(db);
+    }
+
+    const entries = tData.accountingEntries || [];
+    const chart = tData.chartOfAccounts || DEFAULT_CHART_OF_ACCOUNTS;
+
+    // Calcul des soldes par compte
+    const accountsWithBalance = chart.map(acc => {
+      const accEntries = entries.filter(e => e.account === acc.code);
+      const totalDebit = accEntries.reduce((sum, e) => sum + (Number(e.debit) || 0), 0);
+      const totalCredit = accEntries.reduce((sum, e) => sum + (Number(e.credit) || 0), 0);
+      let balance = 0;
+      if (acc.class === 6 || acc.class === 2 || acc.class === 5 || acc.code === '411000' || acc.code === '445660') {
+        balance = totalDebit - totalCredit;
+      } else {
+        balance = totalCredit - totalDebit;
+      }
+      return {
+        ...acc,
+        debit: totalDebit,
+        credit: totalCredit,
+        balance,
+        entriesCount: accEntries.length
+      };
+    });
+
+    // Synthèse par Journal (VT: Ventes, AC: Achats, BQ: Banque, OD: Opérations diverses)
+    const journalMap = {
+      VT: { code: 'VT', name: 'Journal des Ventes', debit: 0, credit: 0, count: 0 },
+      AC: { code: 'AC', name: 'Journal des Achats', debit: 0, credit: 0, count: 0 },
+      BQ: { code: 'BQ', name: 'Journal de Banque', debit: 0, credit: 0, count: 0 },
+      OD: { code: 'OD', name: 'Opérations Diverses', debit: 0, credit: 0, count: 0 }
+    };
+
+    entries.forEach(e => {
+      const j = journalMap[e.journal] || journalMap.OD;
+      j.debit += Number(e.debit) || 0;
+      j.credit += Number(e.credit) || 0;
+      j.count += 1;
+    });
+
+    // Bilan TVA
+    const vatSalesHT = entries.filter(e => e.account.startsWith('7')).reduce((sum, e) => sum + (Number(e.credit) - Number(e.debit)), 0);
+    const vatCollected = entries.filter(e => e.account === '445710').reduce((sum, e) => sum + (Number(e.credit) - Number(e.debit)), 0);
+    const vatDeductible = entries.filter(e => e.account === '445660').reduce((sum, e) => sum + (Number(e.debit) - Number(e.credit)), 0);
+    const netVatDue = Math.round((vatCollected - vatDeductible) * 100) / 100;
+
+    // KPIs Financiers
+    const revenueHT = Math.max(0, vatSalesHT);
+    const expensesHT = entries.filter(e => e.account.startsWith('6')).reduce((sum, e) => sum + (Number(e.debit) - Number(e.credit)), 0);
+    const operatingProfit = revenueHT - expensesHT;
+    const bankAccount = accountsWithBalance.find(a => a.code === '512000');
+    const bankBalance = bankAccount ? bankAccount.balance : 0;
+    const unreconciledCount = entries.filter(e => !e.reconciled).length;
+
+    return sendJson(200, {
+      success: true,
+      tenantId: tenant.id,
+      currency: tenant.currency || 'EUR',
+      entries,
+      accounts: accountsWithBalance,
+      journals: Object.values(journalMap),
+      vat: {
+        baseHT: revenueHT,
+        vatCollected,
+        vatDeductible,
+        netVatDue,
+        status: netVatDue >= 0 ? 'to_pay' : 'credit'
+      },
+      kpis: {
+        revenueHT,
+        expensesHT,
+        operatingProfit,
+        bankBalance,
+        unreconciledCount,
+        totalEntries: entries.length
+      }
+    });
+  }
+
+  // 15. POST /api/tenants/:id/accounting/entries : Ajouter une écriture comptable
+  const acctEntryMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_\-]+)\/accounting\/entries$/);
+  if (acctEntryMatch && method === 'POST') {
+    return getBody().then(data => {
+      const tenantId = acctEntryMatch[1];
+      const db = readDb();
+      if (!db.tenantsData) db.tenantsData = {};
+      const tenant = db.tenants.find(t => t.id === tenantId || t.slug === tenantId);
+      if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+      let tData = db.tenantsData[tenant.id];
+      if (!tData) {
+        tData = generateStarterDataForTenant(tenant);
+        db.tenantsData[tenant.id] = tData;
+      }
+      if (!tData.accountingEntries) tData.accountingEntries = [];
+
+      // Si c'est un lot de lignes (partie double complète) ou une ligne unique
+      const lines = Array.isArray(data.lines) ? data.lines : [data];
+      const nowStr = new Date().toISOString().split('T')[0];
+
+      const createdEntries = lines.map((l, idx) => ({
+        id: `ecr-${tenant.slug}-${Date.now()}-${idx}`,
+        date: l.date || data.date || nowStr,
+        journal: l.journal || data.journal || 'OD',
+        journalName: l.journalName || (l.journal === 'VT' ? 'Ventes' : l.journal === 'AC' ? 'Achats' : l.journal === 'BQ' ? 'Banque' : 'Opérations Diverses'),
+        piece: l.piece || data.piece || `PCE-${Date.now().toString().slice(-4)}`,
+        account: l.account || '471000',
+        accountName: l.accountName || 'Compte d\'attente',
+        label: l.label || data.label || 'Écriture diverse',
+        debit: Number(l.debit) || 0,
+        credit: Number(l.credit) || 0,
+        reconciled: false,
+        letter: ''
+      }));
+
+      tData.accountingEntries.push(...createdEntries);
+      writeDb(db);
+
+      return sendJson(201, { success: true, count: createdEntries.length, entries: createdEntries });
+    });
+  }
+
+  // 16. POST /api/tenants/:id/accounting/reconcile : Lettrer des écritures
+  const reconcileMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_\-]+)\/accounting\/reconcile$/);
+  if (reconcileMatch && method === 'POST') {
+    return getBody().then(data => {
+      const tenantId = reconcileMatch[1];
+      const { entryIds, letter } = data;
+      if (!Array.isArray(entryIds) || entryIds.length < 2) {
+        return sendJson(400, { success: false, error: 'Sélectionnez au moins 2 écritures à lettrer.' });
+      }
+
+      const db = readDb();
+      const tenant = db.tenants.find(t => t.id === tenantId || t.slug === tenantId);
+      if (!tenant || !db.tenantsData[tenant.id]) return sendJson(404, { success: false, error: 'Données introuvables' });
+
+      const tData = db.tenantsData[tenant.id];
+      const code = (letter || String.fromCharCode(65 + Math.floor(Math.random() * 26))).toUpperCase();
+
+      tData.accountingEntries.forEach(e => {
+        if (entryIds.includes(e.id)) {
+          e.reconciled = true;
+          e.letter = code;
+        }
+      });
+
+      writeDb(db);
+      return sendJson(200, { success: true, letter: code, reconciledCount: entryIds.length });
+    });
+  }
+
+  // 17. GET /api/tenants/:id/accounting/fec : Télécharger le Fichier des Écritures Comptables (FEC)
+  const fecMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_\-]+)\/accounting\/fec$/);
+  if (fecMatch && method === 'GET') {
+    const tenantId = fecMatch[1];
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId || t.slug === tenantId);
+    if (!tenant || !db.tenantsData[tenant.id]) return sendJson(404, { success: false, error: 'Données introuvables' });
+
+    const entries = db.tenantsData[tenant.id].accountingEntries || [];
+    const headers = [
+      'JournalCode', 'JournalLib', 'EcritureNum', 'EcritureDate',
+      'CompteNum', 'CompteLib', 'PieceRef', 'PieceDate',
+      'EcritureLib', 'Debit', 'Credit', 'EcritureLet', 'DateLet'
+    ];
+
+    let rows = [headers.join('\t')];
+    entries.forEach((e, idx) => {
+      const row = [
+        e.journal,
+        e.journalName || e.journal,
+        `ECR${String(idx + 1).padStart(5, '0')}`,
+        (e.date || '').replace(/-/g, ''),
+        e.account,
+        e.accountName || e.account,
+        e.piece,
+        (e.date || '').replace(/-/g, ''),
+        e.label,
+        (Number(e.debit) || 0).toFixed(2).replace('.', ','),
+        (Number(e.credit) || 0).toFixed(2).replace('.', ','),
+        e.letter || '',
+        e.reconciled ? (e.date || '').replace(/-/g, '') : ''
+      ];
+      rows.push(row.join('\t'));
+    });
+
+    const fecContent = rows.join('\r\n');
+    res.writeHead(200, {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Content-Disposition': `attachment; filename="FEC_${tenant.slug}_2026.txt"`,
+      'Access-Control-Allow-Origin': '*'
+    });
+    return res.end(fecContent);
   }
 
   // 404 Route API

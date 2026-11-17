@@ -249,7 +249,7 @@
   function updateSidebarVisibility() {
     if (!state.currentTenant) return;
     const active = state.currentTenant.activeModules || [];
-    const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'inbox'];
+    const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'inbox'];
 
     managedModules.forEach(modId => {
       const link = document.querySelector(`.side a.snav__item[data-id="${modId}"]`);

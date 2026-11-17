@@ -234,7 +234,7 @@ const INITIAL_DATA = {
       industry: 'design_agency',
       currency: 'EUR',
       plan: 'enterprise',
-      activeModules: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'inbox'],
+      activeModules: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'inbox'],
       createdAt: '2026-11-01T08:00:00.000Z'
     },
     {
@@ -581,6 +581,224 @@ function generateStarterDataForTenant(tenant) {
     }
   ];
 
+  const inv1HT = Math.round(invoices[0].amount / 1.20);
+  const inv1TVA = invoices[0].amount - inv1HT;
+  const inv2HT = Math.round(invoices[1].amount / 1.20);
+  const inv2TVA = invoices[1].amount - inv2HT;
+
+  const accountingEntries = [
+    {
+      id: `ecr-${tenant.slug}-001`,
+      date: new Date(now - 30 * day).toISOString().split('T')[0],
+      journal: 'BQ',
+      journalName: 'Banque',
+      piece: 'DEP-INIT',
+      account: '512000',
+      accountName: 'Banque - Compte Courant',
+      label: 'Dépôt capital social de constitution',
+      debit: 25000,
+      credit: 0,
+      reconciled: true,
+      letter: 'CAP'
+    },
+    {
+      id: `ecr-${tenant.slug}-002`,
+      date: new Date(now - 30 * day).toISOString().split('T')[0],
+      journal: 'OD',
+      journalName: 'Opérations Diverses',
+      piece: 'DEP-INIT',
+      account: '101000',
+      accountName: 'Capital Social Souscrit',
+      label: 'Souscription capital de constitution',
+      debit: 0,
+      credit: 25000,
+      reconciled: true,
+      letter: 'CAP'
+    },
+    {
+      id: `ecr-${tenant.slug}-003`,
+      date: new Date(invoices[0].issued).toISOString().split('T')[0],
+      journal: 'VT',
+      journalName: 'Ventes',
+      piece: invoices[0].number,
+      account: '411000',
+      accountName: 'Clients',
+      label: `${invoices[0].number} - ${invoices[0].client}`,
+      debit: invoices[0].amount,
+      credit: 0,
+      reconciled: true,
+      letter: 'A'
+    },
+    {
+      id: `ecr-${tenant.slug}-004`,
+      date: new Date(invoices[0].issued).toISOString().split('T')[0],
+      journal: 'VT',
+      journalName: 'Ventes',
+      piece: invoices[0].number,
+      account: '706000',
+      accountName: 'Prestations de services',
+      label: `${invoices[0].number} - ${invoices[0].title}`,
+      debit: 0,
+      credit: inv1HT,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-005`,
+      date: new Date(invoices[0].issued).toISOString().split('T')[0],
+      journal: 'VT',
+      journalName: 'Ventes',
+      piece: invoices[0].number,
+      account: '445710',
+      accountName: 'TVA Collectée (20%)',
+      label: `TVA s/ ${invoices[0].number}`,
+      debit: 0,
+      credit: inv1TVA,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-006`,
+      date: new Date(invoices[0].paidAt || now - 2 * day).toISOString().split('T')[0],
+      journal: 'BQ',
+      journalName: 'Banque',
+      piece: 'VIR-084',
+      account: '512000',
+      accountName: 'Banque - Compte Courant',
+      label: `Règlement ${invoices[0].number} - ${invoices[0].client}`,
+      debit: invoices[0].amount,
+      credit: 0,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-007`,
+      date: new Date(invoices[0].paidAt || now - 2 * day).toISOString().split('T')[0],
+      journal: 'BQ',
+      journalName: 'Banque',
+      piece: 'VIR-084',
+      account: '411000',
+      accountName: 'Clients',
+      label: `Règlement ${invoices[0].number} - ${invoices[0].client}`,
+      debit: 0,
+      credit: invoices[0].amount,
+      reconciled: true,
+      letter: 'A'
+    },
+    {
+      id: `ecr-${tenant.slug}-008`,
+      date: new Date(now - 10 * day).toISOString().split('T')[0],
+      journal: 'AC',
+      journalName: 'Achats',
+      piece: 'FF-CLOUD-26',
+      account: '606000',
+      accountName: 'Achats non stockés / SaaS',
+      label: 'Abonnement Cloud, Serveurs & Outils SaaS',
+      debit: 1200,
+      credit: 0,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-009`,
+      date: new Date(now - 10 * day).toISOString().split('T')[0],
+      journal: 'AC',
+      journalName: 'Achats',
+      piece: 'FF-CLOUD-26',
+      account: '445660',
+      accountName: 'TVA Déductible s/ ABS (20%)',
+      label: 'TVA s/ Abonnements Cloud',
+      debit: 240,
+      credit: 0,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-010`,
+      date: new Date(now - 10 * day).toISOString().split('T')[0],
+      journal: 'AC',
+      journalName: 'Achats',
+      piece: 'FF-CLOUD-26',
+      account: '401000',
+      accountName: 'Fournisseurs',
+      label: 'Fournisseur Cloud Services Europe',
+      debit: 0,
+      credit: 1440,
+      reconciled: true,
+      letter: 'B'
+    },
+    {
+      id: `ecr-${tenant.slug}-011`,
+      date: new Date(now - 4 * day).toISOString().split('T')[0],
+      journal: 'BQ',
+      journalName: 'Banque',
+      piece: 'PRLV-AWS',
+      account: '401000',
+      accountName: 'Fournisseurs',
+      label: 'Règlement Fournisseur Cloud Services',
+      debit: 1440,
+      credit: 0,
+      reconciled: true,
+      letter: 'B'
+    },
+    {
+      id: `ecr-${tenant.slug}-012`,
+      date: new Date(now - 4 * day).toISOString().split('T')[0],
+      journal: 'BQ',
+      journalName: 'Banque',
+      piece: 'PRLV-AWS',
+      account: '512000',
+      accountName: 'Banque - Compte Courant',
+      label: 'Prélèvement Cloud Services Europe',
+      debit: 0,
+      credit: 1440,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-013`,
+      date: new Date(invoices[1].issued).toISOString().split('T')[0],
+      journal: 'VT',
+      journalName: 'Ventes',
+      piece: invoices[1].number,
+      account: '411000',
+      accountName: 'Clients',
+      label: `${invoices[1].number} - ${invoices[1].client}`,
+      debit: invoices[1].amount,
+      credit: 0,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-014`,
+      date: new Date(invoices[1].issued).toISOString().split('T')[0],
+      journal: 'VT',
+      journalName: 'Ventes',
+      piece: invoices[1].number,
+      account: '706000',
+      accountName: 'Prestations de services',
+      label: `${invoices[1].number} - ${invoices[1].title}`,
+      debit: 0,
+      credit: inv2HT,
+      reconciled: false,
+      letter: ''
+    },
+    {
+      id: `ecr-${tenant.slug}-015`,
+      date: new Date(invoices[1].issued).toISOString().split('T')[0],
+      journal: 'VT',
+      journalName: 'Ventes',
+      piece: invoices[1].number,
+      account: '445710',
+      accountName: 'TVA Collectée (20%)',
+      label: `TVA s/ ${invoices[1].number}`,
+      debit: 0,
+      credit: inv2TVA,
+      reconciled: false,
+      letter: ''
+    }
+  ];
+
   return {
     version: 1,
     settings,
@@ -589,6 +807,8 @@ function generateStarterDataForTenant(tenant) {
     tasks,
     invoices,
     crmLeads,
+    accountingEntries,
+    chartOfAccounts: DEFAULT_CHART_OF_ACCOUNTS,
     sessions: [],
     ledger: [
       { id: 'tx-1', t: now - 2 * day, kind: 'in', amount: invoices[0].amount, desc: `Règlement ${invoices[0].number} - ${invoices[0].client}`, cat: 'sales' }
@@ -603,10 +823,27 @@ function generateStarterDataForTenant(tenant) {
   };
 }
 
+const DEFAULT_CHART_OF_ACCOUNTS = [
+  { code: '101000', name: 'Capital social souscrit', category: 'Capitaux propres', class: 1, type: 'equity' },
+  { code: '401000', name: 'Fournisseurs d\'exploitation', category: 'Tiers / Dettes', class: 4, type: 'payable' },
+  { code: '411000', name: 'Clients d\'exploitation', category: 'Tiers / Créances', class: 4, type: 'receivable' },
+  { code: '445660', name: 'TVA Déductible sur autres biens et services (20%)', category: 'Fiscalité / Actif', class: 4, type: 'tax' },
+  { code: '445710', name: 'TVA Collectée sur ventes et prestations (20%)', category: 'Fiscalité / Passif', class: 4, type: 'tax' },
+  { code: '512000', name: 'Banque - Compte courant professionnel', category: 'Trésorerie', class: 5, type: 'bank' },
+  { code: '530000', name: 'Caisse centrale studio', category: 'Trésorerie', class: 5, type: 'cash' },
+  { code: '604000', name: 'Sous-traitance & Prestations techniques externes', category: 'Charges d\'exploitation', class: 6, type: 'expense' },
+  { code: '606000', name: 'Achats non stockés & Abonnements SaaS', category: 'Charges d\'exploitation', class: 6, type: 'expense' },
+  { code: '613000', name: 'Locations immobilières & Bureaux', category: 'Charges d\'exploitation', class: 6, type: 'expense' },
+  { code: '623000', name: 'Publicité, Relations publiques & Marketing', category: 'Charges d\'exploitation', class: 6, type: 'expense' },
+  { code: '706000', name: 'Prestations de services & Honoraires clients', category: 'Produits d\'exploitation', class: 7, type: 'revenue' },
+  { code: '708000', name: 'Produits des activités annexes', category: 'Produits d\'exploitation', class: 7, type: 'revenue' }
+];
+
 module.exports = {
   readDb,
   writeDb,
   CATALOG_MODULES,
   PRESETS,
+  DEFAULT_CHART_OF_ACCOUNTS,
   generateStarterDataForTenant
 };

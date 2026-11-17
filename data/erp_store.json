@@ -16,7 +16,8 @@
         "activity",
         "budget",
         "inbox",
-        "calendar"
+        "calendar",
+        "accounting"
       ],
       "createdAt": "2026-11-01T08:00:00.000Z"
     },
@@ -33,7 +34,8 @@
         "projects",
         "team",
         "budget",
-        "crm"
+        "crm",
+        "accounting"
       ],
       "createdAt": "2026-11-10T10:30:00.000Z"
     },
@@ -70,7 +72,8 @@
         "team",
         "budget",
         "activity",
-        "inbox"
+        "inbox",
+        "accounting"
       ],
       "createdAt": "2026-11-16T18:27:02.679Z"
     },
@@ -99,7 +102,8 @@
         "calendar",
         "team",
         "budget",
-        "activity"
+        "activity",
+        "accounting"
       ],
       "createdAt": "2026-11-17T06:35:49.506Z"
     }
@@ -666,6 +670,571 @@
           "t": 1794897349508,
           "who": "owner",
           "what": "a initialisé l'espace ERP pour BatiPro Ingénierie",
+          "icon": "sparkle",
+          "href": "overview"
+        }
+      ],
+      "opening": 25000,
+      "seq": {
+        "task": 10,
+        "project": 10,
+        "session": 10,
+        "invoice": 10,
+        "tx": 10,
+        "log": 10,
+        "ticket": 1,
+        "thread": 1,
+        "msg": 1
+      }
+    },
+    "northbank-post": {
+      "version": 1,
+      "settings": {
+        "studio": "Northbank Post",
+        "name": "Admin Northbank Post",
+        "email": "admin@northbank-post.com",
+        "role": "Fondateur / CEO",
+        "city": "Paris",
+        "dayHours": 7.5,
+        "weekStart": 1,
+        "notify": {
+          "assigned": true,
+          "reviews": true,
+          "invoices": true,
+          "digest": true
+        }
+      },
+      "members": [
+        {
+          "id": "owner",
+          "name": "Admin Northbank Post",
+          "role": "Fondateur / CEO",
+          "email": "admin@northbank-post.com",
+          "hue": 1,
+          "capacity": 35,
+          "skill": "produce",
+          "status": "in"
+        },
+        {
+          "id": "mem1",
+          "name": "Camille Bernard",
+          "role": "Responsable de Projet",
+          "email": "c.bernard@northbank-post.com",
+          "hue": 2,
+          "capacity": 35,
+          "skill": "edit",
+          "status": "in"
+        },
+        {
+          "id": "mem2",
+          "name": "Lucas Martin",
+          "role": "Consultant & Spécialiste",
+          "email": "l.martin@northbank-post.com",
+          "hue": 3,
+          "capacity": 35,
+          "skill": "colour",
+          "status": "in"
+        }
+      ],
+      "projects": [
+        {
+          "id": "p1",
+          "name": "Refonte Identité Visuelle & Direction Artistique",
+          "client": "Lumina Studio",
+          "status": "active",
+          "c": 1,
+          "start": 1794230537649,
+          "due": 1797081737649,
+          "budget": 28000,
+          "team": [
+            "owner",
+            "mem1"
+          ]
+        },
+        {
+          "id": "p2",
+          "name": "Campagne Digitale & Vidéo 3D",
+          "client": "Apex Brands",
+          "status": "active",
+          "c": 2,
+          "start": 1794662537649,
+          "due": 1796476937649,
+          "budget": 19500,
+          "team": [
+            "owner",
+            "mem2"
+          ]
+        }
+      ],
+      "tasks": [
+        {
+          "id": "t1",
+          "projectId": "p1",
+          "title": "Cadrage des objectifs et livrables clés",
+          "desc": "Réunion de lancement avec les parties prenantes et validation du périmètre.",
+          "status": "done",
+          "who": "owner",
+          "kind": "produce",
+          "priority": "high",
+          "est": 4,
+          "due": 1794748937649,
+          "doneAt": 1794835337649,
+          "checks": [
+            {
+              "id": "c1",
+              "label": "Brief initial validé",
+              "done": true
+            },
+            {
+              "id": "c2",
+              "label": "Planning partagé",
+              "done": true
+            }
+          ]
+        },
+        {
+          "id": "t2",
+          "projectId": "p1",
+          "title": "Élaboration de la proposition technique / créative",
+          "desc": "Développement des premières pistes et revue intermédiaire.",
+          "status": "doing",
+          "who": "mem1",
+          "kind": "edit",
+          "priority": "high",
+          "est": 12,
+          "due": 1795267337649,
+          "checks": [
+            {
+              "id": "c3",
+              "label": "Première ébauche",
+              "done": true
+            },
+            {
+              "id": "c4",
+              "label": "Revue interne",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "t3",
+          "projectId": "p2",
+          "title": "Revue finale et préparation des livrables",
+          "desc": "Contrôle qualité avant présentation au client.",
+          "status": "todo",
+          "who": "mem2",
+          "kind": "colour",
+          "priority": "med",
+          "est": 8,
+          "due": 1795526537649,
+          "checks": [
+            {
+              "id": "c5",
+              "label": "Vérification conformité",
+              "done": false
+            }
+          ]
+        }
+      ],
+      "invoices": [
+        {
+          "id": "inv-1",
+          "number": "FAC-2026-001",
+          "client": "Lumina Studio",
+          "projectId": "p1",
+          "title": "Acompte de démarrage (40%)",
+          "amount": 11200,
+          "issued": 1794230537649,
+          "due": 1796217737649,
+          "status": "paid",
+          "paidAt": 1794748937649
+        },
+        {
+          "id": "inv-2",
+          "number": "FAC-2026-002",
+          "client": "Apex Brands",
+          "projectId": "p2",
+          "title": "Acompte de commande (30%)",
+          "amount": 5850,
+          "issued": 1794662537649,
+          "due": 1797081737649,
+          "status": "sent"
+        }
+      ],
+      "crmLeads": [
+        {
+          "id": "lead-northbank-post-1",
+          "tenantId": "northbank-post",
+          "title": "Production Campagne Vidéo",
+          "company": "Groupe Horizon",
+          "contactName": "Nathalie Roux",
+          "contactEmail": "n.roux@horizon.fr",
+          "contactPhone": "+33 6 11 22 33 44",
+          "value": 28000,
+          "currency": "EUR",
+          "stage": "proposal",
+          "probability": 70,
+          "expectedClose": "2026-11-29",
+          "assignedTo": {
+            "id": "owner",
+            "name": "Admin Northbank Post",
+            "role": "Fondateur / CEO"
+          },
+          "notes": "Demande reçue via le formulaire de qualification. Proposition budgétaire transmise.",
+          "tags": [
+            "Opportunité Qualifiée"
+          ],
+          "createdAt": "2026-11-17T13:22:17.650Z"
+        },
+        {
+          "id": "lead-northbank-post-2",
+          "tenantId": "northbank-post",
+          "title": "Création Contenus Multimédia",
+          "company": "SoluTech France",
+          "contactName": "Marc Vasseur",
+          "contactEmail": "m.vasseur@solutech.com",
+          "contactPhone": "+33 6 88 99 00 11",
+          "value": 16500,
+          "currency": "EUR",
+          "stage": "new",
+          "probability": 30,
+          "expectedClose": "2026-12-07",
+          "assignedTo": {
+            "id": "mem1",
+            "name": "Camille Bernard",
+            "role": "Responsable"
+          },
+          "notes": "Premier échange très positif. Rendez-vous de cadrage prévu la semaine prochaine.",
+          "tags": [
+            "Lead Entrant"
+          ],
+          "createdAt": "2026-11-17T13:22:17.650Z"
+        }
+      ],
+      "accountingEntries": [
+        {
+          "id": "ecr-northbank-post-001",
+          "date": "2026-10-18",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "DEP-INIT",
+          "account": "512000",
+          "accountName": "Banque - Compte Courant",
+          "label": "Dépôt capital social de constitution",
+          "debit": 25000,
+          "credit": 0,
+          "reconciled": true,
+          "letter": "CAP"
+        },
+        {
+          "id": "ecr-northbank-post-002",
+          "date": "2026-10-18",
+          "journal": "OD",
+          "journalName": "Opérations Diverses",
+          "piece": "DEP-INIT",
+          "account": "101000",
+          "accountName": "Capital Social Souscrit",
+          "label": "Souscription capital de constitution",
+          "debit": 0,
+          "credit": 25000,
+          "reconciled": true,
+          "letter": "CAP"
+        },
+        {
+          "id": "ecr-northbank-post-003",
+          "date": "2026-11-09",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-001",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "FAC-2026-001 - Lumina Studio",
+          "debit": 11200,
+          "credit": 0,
+          "reconciled": true,
+          "letter": "A"
+        },
+        {
+          "id": "ecr-northbank-post-004",
+          "date": "2026-11-09",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-001",
+          "account": "706000",
+          "accountName": "Prestations de services",
+          "label": "FAC-2026-001 - Acompte de démarrage (40%)",
+          "debit": 0,
+          "credit": 9333,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-005",
+          "date": "2026-11-09",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-001",
+          "account": "445710",
+          "accountName": "TVA Collectée (20%)",
+          "label": "TVA s/ FAC-2026-001",
+          "debit": 0,
+          "credit": 1867,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-006",
+          "date": "2026-11-15",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "VIR-084",
+          "account": "512000",
+          "accountName": "Banque - Compte Courant",
+          "label": "Règlement FAC-2026-001 - Lumina Studio",
+          "debit": 11200,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-007",
+          "date": "2026-11-15",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "VIR-084",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "Règlement FAC-2026-001 - Lumina Studio",
+          "debit": 0,
+          "credit": 11200,
+          "reconciled": true,
+          "letter": "A"
+        },
+        {
+          "id": "ecr-northbank-post-008",
+          "date": "2026-11-07",
+          "journal": "AC",
+          "journalName": "Achats",
+          "piece": "FF-CLOUD-26",
+          "account": "606000",
+          "accountName": "Achats non stockés / SaaS",
+          "label": "Abonnement Cloud, Serveurs & Outils SaaS",
+          "debit": 1200,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-009",
+          "date": "2026-11-07",
+          "journal": "AC",
+          "journalName": "Achats",
+          "piece": "FF-CLOUD-26",
+          "account": "445660",
+          "accountName": "TVA Déductible s/ ABS (20%)",
+          "label": "TVA s/ Abonnements Cloud",
+          "debit": 240,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-010",
+          "date": "2026-11-07",
+          "journal": "AC",
+          "journalName": "Achats",
+          "piece": "FF-CLOUD-26",
+          "account": "401000",
+          "accountName": "Fournisseurs",
+          "label": "Fournisseur Cloud Services Europe",
+          "debit": 0,
+          "credit": 1440,
+          "reconciled": true,
+          "letter": "B"
+        },
+        {
+          "id": "ecr-northbank-post-011",
+          "date": "2026-11-13",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "PRLV-AWS",
+          "account": "401000",
+          "accountName": "Fournisseurs",
+          "label": "Règlement Fournisseur Cloud Services",
+          "debit": 1440,
+          "credit": 0,
+          "reconciled": true,
+          "letter": "B"
+        },
+        {
+          "id": "ecr-northbank-post-012",
+          "date": "2026-11-13",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "PRLV-AWS",
+          "account": "512000",
+          "accountName": "Banque - Compte Courant",
+          "label": "Prélèvement Cloud Services Europe",
+          "debit": 0,
+          "credit": 1440,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-013",
+          "date": "2026-11-14",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-002",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "FAC-2026-002 - Apex Brands",
+          "debit": 5850,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-014",
+          "date": "2026-11-14",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-002",
+          "account": "706000",
+          "accountName": "Prestations de services",
+          "label": "FAC-2026-002 - Acompte de commande (30%)",
+          "debit": 0,
+          "credit": 4875,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-northbank-post-015",
+          "date": "2026-11-14",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-002",
+          "account": "445710",
+          "accountName": "TVA Collectée (20%)",
+          "label": "TVA s/ FAC-2026-002",
+          "debit": 0,
+          "credit": 975,
+          "reconciled": false,
+          "letter": ""
+        }
+      ],
+      "chartOfAccounts": [
+        {
+          "code": "101000",
+          "name": "Capital social souscrit",
+          "category": "Capitaux propres",
+          "class": 1,
+          "type": "equity"
+        },
+        {
+          "code": "401000",
+          "name": "Fournisseurs d'exploitation",
+          "category": "Tiers / Dettes",
+          "class": 4,
+          "type": "payable"
+        },
+        {
+          "code": "411000",
+          "name": "Clients d'exploitation",
+          "category": "Tiers / Créances",
+          "class": 4,
+          "type": "receivable"
+        },
+        {
+          "code": "445660",
+          "name": "TVA Déductible sur autres biens et services (20%)",
+          "category": "Fiscalité / Actif",
+          "class": 4,
+          "type": "tax"
+        },
+        {
+          "code": "445710",
+          "name": "TVA Collectée sur ventes et prestations (20%)",
+          "category": "Fiscalité / Passif",
+          "class": 4,
+          "type": "tax"
+        },
+        {
+          "code": "512000",
+          "name": "Banque - Compte courant professionnel",
+          "category": "Trésorerie",
+          "class": 5,
+          "type": "bank"
+        },
+        {
+          "code": "530000",
+          "name": "Caisse centrale studio",
+          "category": "Trésorerie",
+          "class": 5,
+          "type": "cash"
+        },
+        {
+          "code": "604000",
+          "name": "Sous-traitance & Prestations techniques externes",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "606000",
+          "name": "Achats non stockés & Abonnements SaaS",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "613000",
+          "name": "Locations immobilières & Bureaux",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "623000",
+          "name": "Publicité, Relations publiques & Marketing",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "706000",
+          "name": "Prestations de services & Honoraires clients",
+          "category": "Produits d'exploitation",
+          "class": 7,
+          "type": "revenue"
+        },
+        {
+          "code": "708000",
+          "name": "Produits des activités annexes",
+          "category": "Produits d'exploitation",
+          "class": 7,
+          "type": "revenue"
+        }
+      ],
+      "sessions": [],
+      "ledger": [
+        {
+          "id": "tx-1",
+          "t": 1794748937649,
+          "kind": "in",
+          "amount": 11200,
+          "desc": "Règlement FAC-2026-001 - Lumina Studio",
+          "cat": "sales"
+        }
+      ],
+      "threads": [],
+      "logs": [],
+      "activity": [
+        {
+          "id": "act-1",
+          "t": 1794921737649,
+          "who": "owner",
+          "what": "a initialisé l'espace ERP pour Northbank Post",
           "icon": "sparkle",
           "href": "overview"
         }
