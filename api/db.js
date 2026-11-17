@@ -1023,8 +1023,126 @@ function generateStarterDataForTenant(tenant) {
     }
   ];
 
+  
+  const inventoryProducts = [
+    {
+      id: 'prod-1',
+      sku: 'SRV-NVME-2TB',
+      name: 'Disque NVMe Enterprise 2To PCIe 4.0',
+      category: 'Matériel & Serveurs',
+      unit: 'unité',
+      quantity: 18,
+      minQuantity: 5,
+      costPrice: 140,
+      sellingPrice: 220,
+      location: 'Baie Serveurs A2',
+      status: 'in_stock'
+    },
+    {
+      id: 'prod-2',
+      sku: 'CAM-LENS-85',
+      name: 'Optique Cinema Prime 85mm T1.5',
+      category: 'Équipement Audiovisuel',
+      unit: 'pièce',
+      quantity: 4,
+      minQuantity: 2,
+      costPrice: 1850,
+      sellingPrice: 2600,
+      location: 'Armoire Optiques Studio B',
+      status: 'in_stock'
+    },
+    {
+      id: 'prod-3',
+      sku: 'MON-OLED-32',
+      name: 'Moniteur Étalonnage 4K OLED 32 pouces',
+      category: 'Équipement Audiovisuel',
+      unit: 'unité',
+      quantity: 2,
+      minQuantity: 3,
+      costPrice: 2400,
+      sellingPrice: 3500,
+      location: 'Poste Étalonnage 1',
+      status: 'low_stock'
+    },
+    {
+      id: 'prod-4',
+      sku: 'LIC-RENDER-Y',
+      name: 'Clé Dongle Licence Ferme de Rendu Annuelle',
+      category: 'Licences & Logiciels',
+      unit: 'licence',
+      quantity: 0,
+      minQuantity: 2,
+      costPrice: 900,
+      sellingPrice: 1350,
+      location: 'Coffre Numérique',
+      status: 'out_of_stock'
+    },
+    {
+      id: 'prod-5',
+      sku: 'CBL-OPT-10M',
+      name: 'Câble Fibre Optique Blindé Neutrik 10m',
+      category: 'Câblage & Accessoires',
+      unit: 'pièce',
+      quantity: 35,
+      minQuantity: 10,
+      costPrice: 45,
+      sellingPrice: 85,
+      location: 'Rangement Câblage C1',
+      status: 'in_stock'
+    }
+  ];
+
+  const inventoryMovements = [
+    {
+      id: 'mov-1',
+      date: now - 15 * day,
+      productId: 'prod-1',
+      productName: 'Disque NVMe Enterprise 2To PCIe 4.0',
+      type: 'in',
+      quantity: 20,
+      reference: 'PO-2026-001',
+      user: 'Alexandre Martin',
+      notes: 'Livraison commande fournisseur hardware'
+    },
+    {
+      id: 'mov-2',
+      date: now - 8 * day,
+      productId: 'prod-1',
+      productName: 'Disque NVMe Enterprise 2To PCIe 4.0',
+      type: 'out',
+      quantity: 2,
+      reference: 'PRJ-2026-002',
+      user: 'Camille Bernard',
+      notes: 'Installation sur serveur montage 4K'
+    },
+    {
+      id: 'mov-3',
+      date: now - 5 * day,
+      productId: 'prod-2',
+      productName: 'Optique Cinema Prime 85mm T1.5',
+      type: 'in',
+      quantity: 4,
+      reference: 'PO-2026-002',
+      user: 'Alexandre Martin',
+      notes: 'Renouvellement parc caméras'
+    },
+    {
+      id: 'mov-4',
+      date: now - 2 * day,
+      productId: 'prod-4',
+      productName: 'Clé Dongle Licence Ferme de Rendu Annuelle',
+      type: 'out',
+      quantity: 1,
+      reference: 'PRJ-2026-001',
+      user: 'Thomas Dubois',
+      notes: 'Attribution cluster VFX'
+    }
+  ];
+
   return {
     version: 1,
+    inventoryProducts,
+    inventoryMovements,
     settings,
     members,
     projects,

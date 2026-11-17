@@ -18,7 +18,10 @@
         "inbox",
         "calendar",
         "accounting",
-        "purchases"
+        "purchases",
+        "inventory",
+        "hr",
+        "banking"
       ],
       "createdAt": "2026-11-01T08:00:00.000Z"
     },
@@ -37,7 +40,10 @@
         "budget",
         "crm",
         "accounting",
-        "purchases"
+        "purchases",
+        "inventory",
+        "hr",
+        "banking"
       ],
       "createdAt": "2026-11-10T10:30:00.000Z"
     },
@@ -56,7 +62,10 @@
         "budget",
         "accounting",
         "inbox",
-        "purchases"
+        "purchases",
+        "inventory",
+        "hr",
+        "banking"
       ],
       "createdAt": "2026-11-12T14:15:00.000Z"
     },
@@ -77,7 +86,10 @@
         "activity",
         "inbox",
         "accounting",
-        "purchases"
+        "purchases",
+        "inventory",
+        "hr",
+        "banking"
       ],
       "createdAt": "2026-11-16T18:27:02.679Z"
     },
@@ -108,7 +120,10 @@
         "budget",
         "activity",
         "accounting",
-        "purchases"
+        "purchases",
+        "inventory",
+        "hr",
+        "banking"
       ],
       "createdAt": "2026-11-17T06:35:49.506Z"
     }
@@ -979,6 +994,286 @@
           "status": "pending",
           "receipt": "facture_redgiant_trapcode.pdf"
         }
+      ],
+      "inventoryProducts": [
+        {
+          "id": "prod-1",
+          "sku": "SRV-NVME-2TB",
+          "name": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "category": "Matériel & Serveurs",
+          "unit": "unité",
+          "quantity": 18,
+          "minQuantity": 5,
+          "costPrice": 140,
+          "sellingPrice": 220,
+          "location": "Baie Serveurs A2",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-2",
+          "sku": "CAM-LENS-85",
+          "name": "Optique Cinema Prime 85mm T1.5",
+          "category": "Équipement Audiovisuel",
+          "unit": "pièce",
+          "quantity": 4,
+          "minQuantity": 2,
+          "costPrice": 1850,
+          "sellingPrice": 2600,
+          "location": "Armoire Optiques Studio B",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-3",
+          "sku": "MON-OLED-32",
+          "name": "Moniteur Étalonnage 4K OLED 32 pouces",
+          "category": "Équipement Audiovisuel",
+          "unit": "unité",
+          "quantity": 2,
+          "minQuantity": 3,
+          "costPrice": 2400,
+          "sellingPrice": 3500,
+          "location": "Poste Étalonnage 1",
+          "status": "low_stock"
+        },
+        {
+          "id": "prod-4",
+          "sku": "LIC-RENDER-Y",
+          "name": "Clé Dongle Licence Ferme de Rendu Annuelle",
+          "category": "Licences & Logiciels",
+          "unit": "licence",
+          "quantity": 0,
+          "minQuantity": 2,
+          "costPrice": 900,
+          "sellingPrice": 1350,
+          "location": "Coffre Numérique",
+          "status": "out_of_stock"
+        },
+        {
+          "id": "prod-5",
+          "sku": "CBL-OPT-10M",
+          "name": "Câble Fibre Optique Blindé Neutrik 10m",
+          "category": "Câblage & Accessoires",
+          "unit": "pièce",
+          "quantity": 35,
+          "minQuantity": 10,
+          "costPrice": 45,
+          "sellingPrice": 85,
+          "location": "Rangement Câblage C1",
+          "status": "in_stock"
+        }
+      ],
+      "inventoryMovements": [
+        {
+          "id": "mov-1",
+          "date": 1793653238427,
+          "productId": "prod-1",
+          "productName": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "type": "in",
+          "quantity": 20,
+          "reference": "PO-2026-001",
+          "user": "Alexandre Martin",
+          "notes": "Livraison commande fournisseur hardware"
+        },
+        {
+          "id": "mov-2",
+          "date": 1794258038427,
+          "productId": "prod-1",
+          "productName": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "type": "out",
+          "quantity": 2,
+          "reference": "PRJ-2026-002",
+          "user": "Camille Bernard",
+          "notes": "Installation sur serveur montage 4K"
+        },
+        {
+          "id": "mov-3",
+          "date": 1794517238427,
+          "productId": "prod-2",
+          "productName": "Optique Cinema Prime 85mm T1.5",
+          "type": "in",
+          "quantity": 4,
+          "reference": "PO-2026-002",
+          "user": "Alexandre Martin",
+          "notes": "Renouvellement parc caméras"
+        },
+        {
+          "id": "mov-4",
+          "date": 1794776438427,
+          "productId": "prod-4",
+          "productName": "Clé Dongle Licence Ferme de Rendu Annuelle",
+          "type": "out",
+          "quantity": 1,
+          "reference": "PRJ-2026-001",
+          "user": "Thomas Dubois",
+          "notes": "Attribution cluster VFX"
+        }
+      ],
+      "employees": [
+        {
+          "id": "emp-1",
+          "name": "Alexandre Martin",
+          "role": "Directeur Général & Producteur Exécutif",
+          "department": "Direction & Stratégie",
+          "email": "a.martin@batipro-ingenierie.com",
+          "phone": "+33 (0)6 10 20 30 40",
+          "contractType": "Mandataire",
+          "startDate": "2020-01-15",
+          "salaryBrut": 6500,
+          "paidLeavesBalance": 25,
+          "rttBalance": 6,
+          "status": "active"
+        },
+        {
+          "id": "emp-2",
+          "name": "Camille Bernard",
+          "role": "Responsable de Projet & VFX Supervisor",
+          "department": "Production & Création",
+          "email": "c.bernard@batipro-ingenierie.com",
+          "phone": "+33 (0)6 22 33 44 55",
+          "contractType": "CDI",
+          "startDate": "2021-06-01",
+          "salaryBrut": 4400,
+          "paidLeavesBalance": 18.5,
+          "rttBalance": 4,
+          "status": "active"
+        },
+        {
+          "id": "emp-3",
+          "name": "Thomas Dubois",
+          "role": "Lead 3D & Technical Artist",
+          "department": "Technique & CGI",
+          "email": "t.dubois@batipro-ingenierie.com",
+          "phone": "+33 (0)6 44 55 66 77",
+          "contractType": "CDI",
+          "startDate": "2022-09-15",
+          "salaryBrut": 3900,
+          "paidLeavesBalance": 14,
+          "rttBalance": 3.5,
+          "status": "active"
+        },
+        {
+          "id": "emp-4",
+          "name": "Sarah Chen",
+          "role": "Coloriste Senior & Motion Designer",
+          "department": "Post-Production",
+          "email": "s.chen@batipro-ingenierie.com",
+          "phone": "+33 (0)6 77 88 99 00",
+          "contractType": "CDI",
+          "startDate": "2023-02-01",
+          "salaryBrut": 3600,
+          "paidLeavesBalance": 21,
+          "rttBalance": 5,
+          "status": "active"
+        },
+        {
+          "id": "emp-5",
+          "name": "Lucas Morel",
+          "role": "Assistant Réalisateur & Opérateur Caméra",
+          "department": "Tournage",
+          "email": "l.morel@batipro-ingenierie.com",
+          "phone": "+33 (0)6 99 11 22 33",
+          "contractType": "Intermittent",
+          "startDate": "2024-04-10",
+          "salaryBrut": 2800,
+          "paidLeavesBalance": 8,
+          "rttBalance": 0,
+          "status": "active"
+        }
+      ],
+      "leaves": [
+        {
+          "id": "leave-1",
+          "employeeId": "emp-2",
+          "employeeName": "Camille Bernard",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-12-22",
+          "endDate": "2026-12-31",
+          "daysCount": 7,
+          "status": "pending",
+          "reason": "Congés d'hiver en famille",
+          "requestedAt": 1794691093462
+        },
+        {
+          "id": "leave-2",
+          "employeeId": "emp-3",
+          "employeeName": "Thomas Dubois",
+          "type": "rtt",
+          "typeName": "RTT",
+          "startDate": "2026-11-20",
+          "endDate": "2026-11-20",
+          "daysCount": 1,
+          "status": "approved",
+          "approver": "Alexandre Martin",
+          "approvedAt": 1794863893462,
+          "reason": "Récupération heures sup tournage nocturne",
+          "requestedAt": 1794518293462
+        },
+        {
+          "id": "leave-3",
+          "employeeId": "emp-4",
+          "employeeName": "Sarah Chen",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-11-27",
+          "endDate": "2026-11-30",
+          "daysCount": 2,
+          "status": "approved",
+          "approver": "Alexandre Martin",
+          "approvedAt": 1794777493462,
+          "reason": "Pont prolongé",
+          "requestedAt": 1794345493462
+        }
+      ],
+      "bankTransactions": [
+        {
+          "id": "btx-1",
+          "date": 1794864346708,
+          "label": "VIR SEPA LUMINA STUDIO FACTURE FAC-2026-001",
+          "amount": 9100,
+          "type": "credit",
+          "matchedEntityId": "inv-1",
+          "matchedEntityType": "invoice",
+          "reconciled": false,
+          "aiConfidence": 99,
+          "aiReason": "Montant exact (9 100,00 €) et numéro de facture FAC-2026-001 détecté dans le libellé bancaire"
+        },
+        {
+          "id": "btx-2",
+          "date": 1794777946708,
+          "label": "PRLV SEPA ADOBE SYSTEMS EUROPE SUBSCRIPTION",
+          "amount": -1440,
+          "type": "debit",
+          "matchedEntityId": "po-1",
+          "matchedEntityType": "purchase_order",
+          "reconciled": false,
+          "aiConfidence": 98,
+          "aiReason": "Montant exact (1 440,00 € TTC) et bénéficiaire Adobe correspondant au bon de commande PO-2026-001"
+        },
+        {
+          "id": "btx-3",
+          "date": 1794605146708,
+          "label": "VIR SEPA APEX BRANDS MISSION CONSEIL",
+          "amount": 17400,
+          "type": "credit",
+          "matchedEntityId": "inv-2",
+          "matchedEntityType": "invoice",
+          "reconciled": true,
+          "reconciledAt": 1794691546708,
+          "aiConfidence": 95
+        },
+        {
+          "id": "btx-4",
+          "date": 1794432346708,
+          "label": "CARTE 12/11 SNCF VOYAGEURS PARIS-LYON",
+          "amount": -210,
+          "type": "debit",
+          "matchedEntityId": "exp-1",
+          "matchedEntityType": "expense",
+          "reconciled": false,
+          "aiConfidence": 94,
+          "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard"
+        }
       ]
     },
     "northbank-post": {
@@ -1679,6 +1974,13 @@
       "logs": [],
       "activity": [
         {
+          "id": "act-1794950228017",
+          "type": "signature",
+          "title": "Devis DEV-2026-003 signé en ligne !",
+          "desc": "Alexandre Dupuis (Directeur Général Vortex Gaming) a validé le devis de 22 000 € TTC.",
+          "t": 1794950228017
+        },
+        {
           "id": "act-1",
           "t": 1794921737649,
           "who": "owner",
@@ -1768,6 +2070,45 @@
             }
           ],
           "acceptedAt": 1794924228449
+        },
+        {
+          "id": "dev-3",
+          "number": "DEV-2026-003",
+          "client": "Vortex Gaming Studio",
+          "clientContact": "Alexandre Dupuis (Directeur Général)",
+          "clientAddress": "45 Rue de la Victoire, 75009 Paris",
+          "clientVat": "FR 32 984123901",
+          "projectId": "p1",
+          "title": "Production Spot Publicitaire 3D Réaliste & Teaser CGI",
+          "amount": 22000,
+          "issued": 1794777164985,
+          "validUntil": 1797369164985,
+          "status": "won",
+          "items": [
+            {
+              "description": "Conception graphique, concept art & storyboard 3D",
+              "quantity": 1,
+              "unitPriceHT": 6000,
+              "totalHT": 6000
+            },
+            {
+              "description": "Modélisation high-poly, texturing 8K & rigging personnages",
+              "quantity": 1,
+              "unitPriceHT": 9500,
+              "totalHT": 9500
+            },
+            {
+              "description": "Rendu photoréaliste GPU Unreal Engine 5 & étalonnage ACES",
+              "quantity": 1,
+              "unitPriceHT": 6500,
+              "totalHT": 6500
+            }
+          ],
+          "signedAt": 1794950228017,
+          "signerName": "Alexandre Dupuis",
+          "signerRole": "Directeur Général Vortex Gaming",
+          "signatureDataUrl": "data:image/png;base64,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",
+          "signatureIp": "::1"
         }
       ],
       "vendors": [
@@ -1948,6 +2289,286 @@
           "amountTTC": 90,
           "status": "pending",
           "receipt": "facture_redgiant_trapcode.pdf"
+        }
+      ],
+      "inventoryProducts": [
+        {
+          "id": "prod-1",
+          "sku": "SRV-NVME-2TB",
+          "name": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "category": "Matériel & Serveurs",
+          "unit": "unité",
+          "quantity": 18,
+          "minQuantity": 5,
+          "costPrice": 140,
+          "sellingPrice": 220,
+          "location": "Baie Serveurs A2",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-2",
+          "sku": "CAM-LENS-85",
+          "name": "Optique Cinema Prime 85mm T1.5",
+          "category": "Équipement Audiovisuel",
+          "unit": "pièce",
+          "quantity": 4,
+          "minQuantity": 2,
+          "costPrice": 1850,
+          "sellingPrice": 2600,
+          "location": "Armoire Optiques Studio B",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-3",
+          "sku": "MON-OLED-32",
+          "name": "Moniteur Étalonnage 4K OLED 32 pouces",
+          "category": "Équipement Audiovisuel",
+          "unit": "unité",
+          "quantity": 2,
+          "minQuantity": 3,
+          "costPrice": 2400,
+          "sellingPrice": 3500,
+          "location": "Poste Étalonnage 1",
+          "status": "low_stock"
+        },
+        {
+          "id": "prod-4",
+          "sku": "LIC-RENDER-Y",
+          "name": "Clé Dongle Licence Ferme de Rendu Annuelle",
+          "category": "Licences & Logiciels",
+          "unit": "licence",
+          "quantity": 0,
+          "minQuantity": 2,
+          "costPrice": 900,
+          "sellingPrice": 1350,
+          "location": "Coffre Numérique",
+          "status": "out_of_stock"
+        },
+        {
+          "id": "prod-5",
+          "sku": "CBL-OPT-10M",
+          "name": "Câble Fibre Optique Blindé Neutrik 10m",
+          "category": "Câblage & Accessoires",
+          "unit": "pièce",
+          "quantity": 35,
+          "minQuantity": 10,
+          "costPrice": 45,
+          "sellingPrice": 85,
+          "location": "Rangement Câblage C1",
+          "status": "in_stock"
+        }
+      ],
+      "inventoryMovements": [
+        {
+          "id": "mov-1",
+          "date": 1793653238427,
+          "productId": "prod-1",
+          "productName": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "type": "in",
+          "quantity": 20,
+          "reference": "PO-2026-001",
+          "user": "Alexandre Martin",
+          "notes": "Livraison commande fournisseur hardware"
+        },
+        {
+          "id": "mov-2",
+          "date": 1794258038427,
+          "productId": "prod-1",
+          "productName": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "type": "out",
+          "quantity": 2,
+          "reference": "PRJ-2026-002",
+          "user": "Camille Bernard",
+          "notes": "Installation sur serveur montage 4K"
+        },
+        {
+          "id": "mov-3",
+          "date": 1794517238427,
+          "productId": "prod-2",
+          "productName": "Optique Cinema Prime 85mm T1.5",
+          "type": "in",
+          "quantity": 4,
+          "reference": "PO-2026-002",
+          "user": "Alexandre Martin",
+          "notes": "Renouvellement parc caméras"
+        },
+        {
+          "id": "mov-4",
+          "date": 1794776438427,
+          "productId": "prod-4",
+          "productName": "Clé Dongle Licence Ferme de Rendu Annuelle",
+          "type": "out",
+          "quantity": 1,
+          "reference": "PRJ-2026-001",
+          "user": "Thomas Dubois",
+          "notes": "Attribution cluster VFX"
+        }
+      ],
+      "employees": [
+        {
+          "id": "emp-1",
+          "name": "Alexandre Martin",
+          "role": "Directeur Général & Producteur Exécutif",
+          "department": "Direction & Stratégie",
+          "email": "a.martin@northbank-post.com",
+          "phone": "+33 (0)6 10 20 30 40",
+          "contractType": "Mandataire",
+          "startDate": "2020-01-15",
+          "salaryBrut": 6500,
+          "paidLeavesBalance": 25,
+          "rttBalance": 6,
+          "status": "active"
+        },
+        {
+          "id": "emp-2",
+          "name": "Camille Bernard",
+          "role": "Responsable de Projet & VFX Supervisor",
+          "department": "Production & Création",
+          "email": "c.bernard@northbank-post.com",
+          "phone": "+33 (0)6 22 33 44 55",
+          "contractType": "CDI",
+          "startDate": "2021-06-01",
+          "salaryBrut": 4400,
+          "paidLeavesBalance": 18.5,
+          "rttBalance": 4,
+          "status": "active"
+        },
+        {
+          "id": "emp-3",
+          "name": "Thomas Dubois",
+          "role": "Lead 3D & Technical Artist",
+          "department": "Technique & CGI",
+          "email": "t.dubois@northbank-post.com",
+          "phone": "+33 (0)6 44 55 66 77",
+          "contractType": "CDI",
+          "startDate": "2022-09-15",
+          "salaryBrut": 3900,
+          "paidLeavesBalance": 14,
+          "rttBalance": 3.5,
+          "status": "active"
+        },
+        {
+          "id": "emp-4",
+          "name": "Sarah Chen",
+          "role": "Coloriste Senior & Motion Designer",
+          "department": "Post-Production",
+          "email": "s.chen@northbank-post.com",
+          "phone": "+33 (0)6 77 88 99 00",
+          "contractType": "CDI",
+          "startDate": "2023-02-01",
+          "salaryBrut": 3600,
+          "paidLeavesBalance": 21,
+          "rttBalance": 5,
+          "status": "active"
+        },
+        {
+          "id": "emp-5",
+          "name": "Lucas Morel",
+          "role": "Assistant Réalisateur & Opérateur Caméra",
+          "department": "Tournage",
+          "email": "l.morel@northbank-post.com",
+          "phone": "+33 (0)6 99 11 22 33",
+          "contractType": "Intermittent",
+          "startDate": "2024-04-10",
+          "salaryBrut": 2800,
+          "paidLeavesBalance": 8,
+          "rttBalance": 0,
+          "status": "active"
+        }
+      ],
+      "leaves": [
+        {
+          "id": "leave-1",
+          "employeeId": "emp-2",
+          "employeeName": "Camille Bernard",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-12-22",
+          "endDate": "2026-12-31",
+          "daysCount": 7,
+          "status": "pending",
+          "reason": "Congés d'hiver en famille",
+          "requestedAt": 1794691093462
+        },
+        {
+          "id": "leave-2",
+          "employeeId": "emp-3",
+          "employeeName": "Thomas Dubois",
+          "type": "rtt",
+          "typeName": "RTT",
+          "startDate": "2026-11-20",
+          "endDate": "2026-11-20",
+          "daysCount": 1,
+          "status": "approved",
+          "approver": "Alexandre Martin",
+          "approvedAt": 1794863893462,
+          "reason": "Récupération heures sup tournage nocturne",
+          "requestedAt": 1794518293462
+        },
+        {
+          "id": "leave-3",
+          "employeeId": "emp-4",
+          "employeeName": "Sarah Chen",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-11-27",
+          "endDate": "2026-11-30",
+          "daysCount": 2,
+          "status": "approved",
+          "approver": "Alexandre Martin",
+          "approvedAt": 1794777493462,
+          "reason": "Pont prolongé",
+          "requestedAt": 1794345493462
+        }
+      ],
+      "bankTransactions": [
+        {
+          "id": "btx-1",
+          "date": 1794864346708,
+          "label": "VIR SEPA LUMINA STUDIO FACTURE FAC-2026-001",
+          "amount": 9100,
+          "type": "credit",
+          "matchedEntityId": "inv-1",
+          "matchedEntityType": "invoice",
+          "reconciled": false,
+          "aiConfidence": 99,
+          "aiReason": "Montant exact (9 100,00 €) et numéro de facture FAC-2026-001 détecté dans le libellé bancaire"
+        },
+        {
+          "id": "btx-2",
+          "date": 1794777946708,
+          "label": "PRLV SEPA ADOBE SYSTEMS EUROPE SUBSCRIPTION",
+          "amount": -1440,
+          "type": "debit",
+          "matchedEntityId": "po-1",
+          "matchedEntityType": "purchase_order",
+          "reconciled": false,
+          "aiConfidence": 98,
+          "aiReason": "Montant exact (1 440,00 € TTC) et bénéficiaire Adobe correspondant au bon de commande PO-2026-001"
+        },
+        {
+          "id": "btx-3",
+          "date": 1794605146708,
+          "label": "VIR SEPA APEX BRANDS MISSION CONSEIL",
+          "amount": 17400,
+          "type": "credit",
+          "matchedEntityId": "inv-2",
+          "matchedEntityType": "invoice",
+          "reconciled": true,
+          "reconciledAt": 1794691546708,
+          "aiConfidence": 95
+        },
+        {
+          "id": "btx-4",
+          "date": 1794432346708,
+          "label": "CARTE 12/11 SNCF VOYAGEURS PARIS-LYON",
+          "amount": -210,
+          "type": "debit",
+          "matchedEntityId": "exp-1",
+          "matchedEntityType": "expense",
+          "reconciled": false,
+          "aiConfidence": 94,
+          "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard"
         }
       ]
     },
@@ -2802,6 +3423,286 @@
           "amountTTC": 90,
           "status": "pending",
           "receipt": "facture_redgiant_trapcode.pdf"
+        }
+      ],
+      "inventoryProducts": [
+        {
+          "id": "prod-1",
+          "sku": "SRV-NVME-2TB",
+          "name": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "category": "Matériel & Serveurs",
+          "unit": "unité",
+          "quantity": 18,
+          "minQuantity": 5,
+          "costPrice": 140,
+          "sellingPrice": 220,
+          "location": "Baie Serveurs A2",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-2",
+          "sku": "CAM-LENS-85",
+          "name": "Optique Cinema Prime 85mm T1.5",
+          "category": "Équipement Audiovisuel",
+          "unit": "pièce",
+          "quantity": 4,
+          "minQuantity": 2,
+          "costPrice": 1850,
+          "sellingPrice": 2600,
+          "location": "Armoire Optiques Studio B",
+          "status": "in_stock"
+        },
+        {
+          "id": "prod-3",
+          "sku": "MON-OLED-32",
+          "name": "Moniteur Étalonnage 4K OLED 32 pouces",
+          "category": "Équipement Audiovisuel",
+          "unit": "unité",
+          "quantity": 2,
+          "minQuantity": 3,
+          "costPrice": 2400,
+          "sellingPrice": 3500,
+          "location": "Poste Étalonnage 1",
+          "status": "low_stock"
+        },
+        {
+          "id": "prod-4",
+          "sku": "LIC-RENDER-Y",
+          "name": "Clé Dongle Licence Ferme de Rendu Annuelle",
+          "category": "Licences & Logiciels",
+          "unit": "licence",
+          "quantity": 0,
+          "minQuantity": 2,
+          "costPrice": 900,
+          "sellingPrice": 1350,
+          "location": "Coffre Numérique",
+          "status": "out_of_stock"
+        },
+        {
+          "id": "prod-5",
+          "sku": "CBL-OPT-10M",
+          "name": "Câble Fibre Optique Blindé Neutrik 10m",
+          "category": "Câblage & Accessoires",
+          "unit": "pièce",
+          "quantity": 35,
+          "minQuantity": 10,
+          "costPrice": 45,
+          "sellingPrice": 85,
+          "location": "Rangement Câblage C1",
+          "status": "in_stock"
+        }
+      ],
+      "inventoryMovements": [
+        {
+          "id": "mov-1",
+          "date": 1793653238427,
+          "productId": "prod-1",
+          "productName": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "type": "in",
+          "quantity": 20,
+          "reference": "PO-2026-001",
+          "user": "Alexandre Martin",
+          "notes": "Livraison commande fournisseur hardware"
+        },
+        {
+          "id": "mov-2",
+          "date": 1794258038427,
+          "productId": "prod-1",
+          "productName": "Disque NVMe Enterprise 2To PCIe 4.0",
+          "type": "out",
+          "quantity": 2,
+          "reference": "PRJ-2026-002",
+          "user": "Camille Bernard",
+          "notes": "Installation sur serveur montage 4K"
+        },
+        {
+          "id": "mov-3",
+          "date": 1794517238427,
+          "productId": "prod-2",
+          "productName": "Optique Cinema Prime 85mm T1.5",
+          "type": "in",
+          "quantity": 4,
+          "reference": "PO-2026-002",
+          "user": "Alexandre Martin",
+          "notes": "Renouvellement parc caméras"
+        },
+        {
+          "id": "mov-4",
+          "date": 1794776438427,
+          "productId": "prod-4",
+          "productName": "Clé Dongle Licence Ferme de Rendu Annuelle",
+          "type": "out",
+          "quantity": 1,
+          "reference": "PRJ-2026-001",
+          "user": "Thomas Dubois",
+          "notes": "Attribution cluster VFX"
+        }
+      ],
+      "employees": [
+        {
+          "id": "emp-1",
+          "name": "Alexandre Martin",
+          "role": "Directeur Général & Producteur Exécutif",
+          "department": "Direction & Stratégie",
+          "email": "a.martin@atelier-design-co.com",
+          "phone": "+33 (0)6 10 20 30 40",
+          "contractType": "Mandataire",
+          "startDate": "2020-01-15",
+          "salaryBrut": 6500,
+          "paidLeavesBalance": 25,
+          "rttBalance": 6,
+          "status": "active"
+        },
+        {
+          "id": "emp-2",
+          "name": "Camille Bernard",
+          "role": "Responsable de Projet & VFX Supervisor",
+          "department": "Production & Création",
+          "email": "c.bernard@atelier-design-co.com",
+          "phone": "+33 (0)6 22 33 44 55",
+          "contractType": "CDI",
+          "startDate": "2021-06-01",
+          "salaryBrut": 4400,
+          "paidLeavesBalance": 18.5,
+          "rttBalance": 4,
+          "status": "active"
+        },
+        {
+          "id": "emp-3",
+          "name": "Thomas Dubois",
+          "role": "Lead 3D & Technical Artist",
+          "department": "Technique & CGI",
+          "email": "t.dubois@atelier-design-co.com",
+          "phone": "+33 (0)6 44 55 66 77",
+          "contractType": "CDI",
+          "startDate": "2022-09-15",
+          "salaryBrut": 3900,
+          "paidLeavesBalance": 14,
+          "rttBalance": 3.5,
+          "status": "active"
+        },
+        {
+          "id": "emp-4",
+          "name": "Sarah Chen",
+          "role": "Coloriste Senior & Motion Designer",
+          "department": "Post-Production",
+          "email": "s.chen@atelier-design-co.com",
+          "phone": "+33 (0)6 77 88 99 00",
+          "contractType": "CDI",
+          "startDate": "2023-02-01",
+          "salaryBrut": 3600,
+          "paidLeavesBalance": 21,
+          "rttBalance": 5,
+          "status": "active"
+        },
+        {
+          "id": "emp-5",
+          "name": "Lucas Morel",
+          "role": "Assistant Réalisateur & Opérateur Caméra",
+          "department": "Tournage",
+          "email": "l.morel@atelier-design-co.com",
+          "phone": "+33 (0)6 99 11 22 33",
+          "contractType": "Intermittent",
+          "startDate": "2024-04-10",
+          "salaryBrut": 2800,
+          "paidLeavesBalance": 8,
+          "rttBalance": 0,
+          "status": "active"
+        }
+      ],
+      "leaves": [
+        {
+          "id": "leave-1",
+          "employeeId": "emp-2",
+          "employeeName": "Camille Bernard",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-12-22",
+          "endDate": "2026-12-31",
+          "daysCount": 7,
+          "status": "pending",
+          "reason": "Congés d'hiver en famille",
+          "requestedAt": 1794691093462
+        },
+        {
+          "id": "leave-2",
+          "employeeId": "emp-3",
+          "employeeName": "Thomas Dubois",
+          "type": "rtt",
+          "typeName": "RTT",
+          "startDate": "2026-11-20",
+          "endDate": "2026-11-20",
+          "daysCount": 1,
+          "status": "approved",
+          "approver": "Alexandre Martin",
+          "approvedAt": 1794863893462,
+          "reason": "Récupération heures sup tournage nocturne",
+          "requestedAt": 1794518293462
+        },
+        {
+          "id": "leave-3",
+          "employeeId": "emp-4",
+          "employeeName": "Sarah Chen",
+          "type": "paid",
+          "typeName": "Congés Payés",
+          "startDate": "2026-11-27",
+          "endDate": "2026-11-30",
+          "daysCount": 2,
+          "status": "approved",
+          "approver": "Alexandre Martin",
+          "approvedAt": 1794777493462,
+          "reason": "Pont prolongé",
+          "requestedAt": 1794345493462
+        }
+      ],
+      "bankTransactions": [
+        {
+          "id": "btx-1",
+          "date": 1794864346708,
+          "label": "VIR SEPA LUMINA STUDIO FACTURE FAC-2026-001",
+          "amount": 9100,
+          "type": "credit",
+          "matchedEntityId": "inv-1",
+          "matchedEntityType": "invoice",
+          "reconciled": false,
+          "aiConfidence": 99,
+          "aiReason": "Montant exact (9 100,00 €) et numéro de facture FAC-2026-001 détecté dans le libellé bancaire"
+        },
+        {
+          "id": "btx-2",
+          "date": 1794777946708,
+          "label": "PRLV SEPA ADOBE SYSTEMS EUROPE SUBSCRIPTION",
+          "amount": -1440,
+          "type": "debit",
+          "matchedEntityId": "po-1",
+          "matchedEntityType": "purchase_order",
+          "reconciled": false,
+          "aiConfidence": 98,
+          "aiReason": "Montant exact (1 440,00 € TTC) et bénéficiaire Adobe correspondant au bon de commande PO-2026-001"
+        },
+        {
+          "id": "btx-3",
+          "date": 1794605146708,
+          "label": "VIR SEPA APEX BRANDS MISSION CONSEIL",
+          "amount": 17400,
+          "type": "credit",
+          "matchedEntityId": "inv-2",
+          "matchedEntityType": "invoice",
+          "reconciled": true,
+          "reconciledAt": 1794691546708,
+          "aiConfidence": 95
+        },
+        {
+          "id": "btx-4",
+          "date": 1794432346708,
+          "label": "CARTE 12/11 SNCF VOYAGEURS PARIS-LYON",
+          "amount": -210,
+          "type": "debit",
+          "matchedEntityId": "exp-1",
+          "matchedEntityType": "expense",
+          "reconciled": false,
+          "aiConfidence": 94,
+          "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard"
         }
       ]
     }

@@ -1226,6 +1226,513 @@ async function handleApiRequest(req, res) {
     return sendJson(201, { success: true, message: 'Fournisseur ajouté', vendor: newVen });
   }
 
+
+  // ==========================================
+  // INVENTORY & STOCK MANAGEMENT (MODULE STOCK)
+  // ==========================================
+
+  // GET /api/tenants/:id/inventory
+  const getInventoryMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/inventory$/);
+  if (getInventoryMatch && method === 'GET') {
+    const tenantId = getInventoryMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.inventoryProducts = tenantData.inventoryProducts || [];
+    tenantData.inventoryMovements = tenantData.inventoryMovements || [];
+
+    // Recalculate statuses
+    tenantData.inventoryProducts.forEach(p => {
+      const q = Number(p.quantity) || 0;
+      const min = Number(p.minQuantity) || 0;
+      if (q <= 0) p.status = 'out_of_stock';
+      else if (q <= min) p.status = 'low_stock';
+      else p.status = 'in_stock';
+    });
+
+    const totalValuation = tenantData.inventoryProducts.reduce((sum, p) => sum + ((Number(p.quantity) || 0) * (Number(p.costPrice) || 0)), 0);
+    const totalPotentialRevenue = tenantData.inventoryProducts.reduce((sum, p) => sum + ((Number(p.quantity) || 0) * (Number(p.sellingPrice) || 0)), 0);
+    const totalUnits = tenantData.inventoryProducts.reduce((sum, p) => sum + (Number(p.quantity) || 0), 0);
+    const lowStockCount = tenantData.inventoryProducts.filter(p => p.status === 'low_stock').length;
+    const outOfStockCount = tenantData.inventoryProducts.filter(p => p.status === 'out_of_stock').length;
+
+    return sendJson(200, {
+      success: true,
+      products: tenantData.inventoryProducts,
+      movements: tenantData.inventoryMovements.sort((a, b) => b.date - a.date),
+      stats: {
+        totalProducts: tenantData.inventoryProducts.length,
+        totalUnits,
+        totalValuation: Math.round(totalValuation * 100) / 100,
+        totalPotentialRevenue: Math.round(totalPotentialRevenue * 100) / 100,
+        potentialMargin: Math.round((totalPotentialRevenue - totalValuation) * 100) / 100,
+        lowStockCount,
+        outOfStockCount
+      }
+    });
+  }
+
+  // POST /api/tenants/:id/inventory/products (Créer un article)
+  const postProductMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/inventory\/products$/);
+  if (postProductMatch && method === 'POST') {
+    const tenantId = postProductMatch[1];
+    const body = await parseBody(req);
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.inventoryProducts = tenantData.inventoryProducts || [];
+    tenantData.inventoryMovements = tenantData.inventoryMovements || [];
+
+    const quantity = Number(body.quantity) || 0;
+    const minQuantity = Number(body.minQuantity) || 0;
+    const costPrice = Number(body.costPrice) || 0;
+    const sellingPrice = Number(body.sellingPrice) || 0;
+
+    let status = 'in_stock';
+    if (quantity <= 0) status = 'out_of_stock';
+    else if (quantity <= minQuantity) status = 'low_stock';
+
+    const newProduct = {
+      id: 'prod-' + Date.now(),
+      sku: body.sku || 'SKU-' + Math.floor(1000 + Math.random() * 9000),
+      name: body.name || 'Nouvel Article',
+      category: body.category || 'Général',
+      unit: body.unit || 'unité',
+      quantity,
+      minQuantity,
+      costPrice,
+      sellingPrice,
+      location: body.location || 'Entrepôt Principal',
+      status
+    };
+
+    tenantData.inventoryProducts.unshift(newProduct);
+
+    if (quantity > 0) {
+      tenantData.inventoryMovements.unshift({
+        id: 'mov-' + Date.now(),
+        date: Date.now(),
+        productId: newProduct.id,
+        productName: newProduct.name,
+        type: 'in',
+        quantity,
+        reference: 'Stock initial',
+        user: body.user || 'Administrateur',
+        notes: 'Initialisation de la fiche produit'
+      });
+    }
+
+    writeDb(db);
+    return sendJson(201, { success: true, message: 'Article créé avec succès', product: newProduct });
+  }
+
+  // POST /api/tenants/:id/inventory/movements (Mouvement de stock Entrée/Sortie/Ajustement)
+  const postMovementMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/inventory\/movements$/);
+  if (postMovementMatch && method === 'POST') {
+    const tenantId = postMovementMatch[1];
+    const body = await parseBody(req);
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.inventoryProducts = tenantData.inventoryProducts || [];
+    tenantData.inventoryMovements = tenantData.inventoryMovements || [];
+
+    const product = tenantData.inventoryProducts.find(p => p.id === body.productId);
+    if (!product) return sendJson(404, { success: false, error: 'Article introuvable' });
+
+    const qty = Math.abs(Number(body.quantity)) || 0;
+    if (qty === 0) return sendJson(400, { success: false, error: 'Quantité invalide' });
+
+    if (body.type === 'in') {
+      product.quantity = (Number(product.quantity) || 0) + qty;
+    } else if (body.type === 'out') {
+      if ((Number(product.quantity) || 0) < qty) {
+        return sendJson(400, { success: false, error: 'Stock insuffisant pour cette sortie (' + product.quantity + ' dispo)' });
+      }
+      product.quantity = (Number(product.quantity) || 0) - qty;
+    } else if (body.type === 'adjustment') {
+      product.quantity = qty;
+    }
+
+    if (product.quantity <= 0) product.status = 'out_of_stock';
+    else if (product.quantity <= (Number(product.minQuantity) || 0)) product.status = 'low_stock';
+    else product.status = 'in_stock';
+
+    const newMovement = {
+      id: 'mov-' + Date.now(),
+      date: Date.now(),
+      productId: product.id,
+      productName: product.name,
+      type: body.type || 'in',
+      quantity: qty,
+      reference: body.reference || 'Mouvement manuel',
+      user: body.user || 'Gestionnaire de Stock',
+      notes: body.notes || ''
+    };
+
+    tenantData.inventoryMovements.unshift(newMovement);
+    writeDb(db);
+
+    return sendJson(201, {
+      success: true,
+      message: 'Mouvement de stock enregistré',
+      movement: newMovement,
+      product
+    });
+  }
+
+
+  // ==========================================
+  // CLIENT PORTAL & ELECTRONIC SIGNATURE
+  // ==========================================
+
+  // GET /api/portal/quote/:quoteId (Accès public devis sécurisé)
+  const getPortalQuoteMatch = pathname.match(/^\/api\/portal\/quote\/([a-zA-Z0-9_-]+)$/);
+  if (getPortalQuoteMatch && method === 'GET') {
+    const quoteId = getPortalQuoteMatch[1];
+    const db = readDb();
+
+    // Chercher le devis dans tous les tenants
+    let foundQuote = null;
+    let foundTenant = null;
+
+    for (const tenant of db.tenants) {
+      const tData = db.tenantsData[tenant.id];
+      if (tData && tData.quotes) {
+        const q = tData.quotes.find(item => item.id === quoteId || item.number === quoteId);
+        if (q) {
+          foundQuote = q;
+          foundTenant = tenant;
+          break;
+        }
+      }
+    }
+
+    if (!foundQuote || !foundTenant) {
+      return sendJson(404, { success: false, error: 'Devis introuvable ou lien expiré' });
+    }
+
+    const tData = db.tenantsData[foundTenant.id];
+    return sendJson(200, {
+      success: true,
+      quote: foundQuote,
+      company: {
+        id: foundTenant.id,
+        name: foundTenant.name,
+        sector: foundTenant.sector,
+        settings: tData.settings || {}
+      }
+    });
+  }
+
+  // POST /api/portal/quote/:quoteId/sign (Signature électronique client)
+  const postPortalSignMatch = pathname.match(/^\/api\/portal\/quote\/([a-zA-Z0-9_-]+)\/sign$/);
+  if (postPortalSignMatch && method === 'POST') {
+    const quoteId = postPortalSignMatch[1];
+    const body = await parseBody(req);
+    const db = readDb();
+
+    let foundQuote = null;
+    let foundTenant = null;
+    let tenantData = null;
+
+    for (const tenant of db.tenants) {
+      const tData = db.tenantsData[tenant.id];
+      if (tData && tData.quotes) {
+        const q = tData.quotes.find(item => item.id === quoteId || item.number === quoteId);
+        if (q) {
+          foundQuote = q;
+          foundTenant = tenant;
+          tenantData = tData;
+          break;
+        }
+      }
+    }
+
+    if (!foundQuote || !foundTenant) {
+      return sendJson(404, { success: false, error: 'Devis introuvable' });
+    }
+
+    const signedAt = Date.now();
+    foundQuote.status = 'won';
+    foundQuote.signedAt = signedAt;
+    foundQuote.signerName = body.signerName || 'Client';
+    foundQuote.signerRole = body.signerRole || 'Représentant Légal';
+    foundQuote.signatureDataUrl = body.signatureDataUrl || null;
+    foundQuote.signatureIp = req.socket.remoteAddress || '127.0.0.1';
+
+    // Log in activity feed
+    tenantData.activity = tenantData.activity || [];
+    tenantData.activity.unshift({
+      id: 'act-' + Date.now(),
+      type: 'signature',
+      title: 'Devis ' + foundQuote.number + ' signé en ligne !',
+      desc: body.signerName + ' (' + (body.signerRole || 'Client') + ') a validé le devis de ' + (foundQuote.totalTTC || foundQuote.amount || 0).toLocaleString('fr-FR') + ' € TTC.',
+      t: signedAt
+    });
+
+    writeDb(db);
+
+    return sendJson(200, {
+      success: true,
+      message: 'Devis accepté et signé électroniquement avec succès',
+      quote: foundQuote
+    });
+  }
+
+
+  // ==========================================
+  // HR, EMPLOYEES & LEAVES MANAGEMENT
+  // ==========================================
+
+  // GET /api/tenants/:id/hr
+  const getHrMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/hr$/);
+  if (getHrMatch && method === 'GET') {
+    const tenantId = getHrMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.employees = tenantData.employees || [];
+    tenantData.leaves = tenantData.leaves || [];
+
+    const totalEmployees = tenantData.employees.length;
+    const pendingLeaves = tenantData.leaves.filter(l => l.status === 'pending');
+    const totalGrossPayroll = tenantData.employees.reduce((s, e) => s + (Number(e.salaryBrut) || 0), 0);
+    const estimatedEmployerCharges = Math.round(totalGrossPayroll * 0.42 * 100) / 100;
+    const estimatedEmployeeCharges = Math.round(totalGrossPayroll * 0.22 * 100) / 100;
+    const estimatedNetPayroll = Math.round((totalGrossPayroll - estimatedEmployeeCharges) * 100) / 100;
+    const totalCompanyCost = Math.round((totalGrossPayroll + estimatedEmployerCharges) * 100) / 100;
+
+    return sendJson(200, {
+      success: true,
+      employees: tenantData.employees,
+      leaves: tenantData.leaves.sort((a, b) => b.requestedAt - a.requestedAt),
+      stats: {
+        totalEmployees,
+        pendingLeavesCount: pendingLeaves.length,
+        totalGrossPayroll,
+        estimatedEmployerCharges,
+        estimatedNetPayroll,
+        totalCompanyCost
+      }
+    });
+  }
+
+  // POST /api/tenants/:id/hr/employees (Créer un salarié)
+  const postEmployeeMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/hr\/employees$/);
+  if (postEmployeeMatch && method === 'POST') {
+    const tenantId = postEmployeeMatch[1];
+    const body = await parseBody(req);
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.employees = tenantData.employees || [];
+
+    const newEmp = {
+      id: 'emp-' + Date.now(),
+      name: body.name || 'Nouveau Salarié',
+      role: body.role || 'Poste non défini',
+      department: body.department || 'Production',
+      email: body.email || '',
+      phone: body.phone || '',
+      contractType: body.contractType || 'CDI',
+      startDate: body.startDate || new Date().toISOString().slice(0, 10),
+      salaryBrut: Number(body.salaryBrut) || 3000,
+      paidLeavesBalance: Number(body.paidLeavesBalance) || 25,
+      rttBalance: Number(body.rttBalance) || 5,
+      status: 'active'
+    };
+
+    tenantData.employees.unshift(newEmp);
+    writeDb(db);
+
+    return sendJson(201, { success: true, message: 'Fiche collaborateur créée avec succès', employee: newEmp });
+  }
+
+  // POST /api/tenants/:id/hr/leaves (Poser une demande de congé)
+  const postLeaveMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/hr\/leaves$/);
+  if (postLeaveMatch && method === 'POST') {
+    const tenantId = postLeaveMatch[1];
+    const body = await parseBody(req);
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.employees = tenantData.employees || [];
+    tenantData.leaves = tenantData.leaves || [];
+
+    const emp = tenantData.employees.find(e => e.id === body.employeeId);
+    if (!emp) return sendJson(404, { success: false, error: 'Salarié introuvable' });
+
+    const newLeave = {
+      id: 'leave-' + Date.now(),
+      employeeId: emp.id,
+      employeeName: emp.name,
+      type: body.type || 'paid',
+      typeName: body.type === 'rtt' ? 'RTT' : body.type === 'sick' ? 'Maladie' : 'Congés Payés',
+      startDate: body.startDate || new Date().toISOString().slice(0, 10),
+      endDate: body.endDate || new Date().toISOString().slice(0, 10),
+      daysCount: Number(body.daysCount) || 1,
+      status: 'pending',
+      reason: body.reason || '',
+      requestedAt: Date.now()
+    };
+
+    tenantData.leaves.unshift(newLeave);
+    writeDb(db);
+
+    return sendJson(201, { success: true, message: 'Demande de congés enregistrée', leave: newLeave });
+  }
+
+  // POST /api/tenants/:id/hr/leaves/:leaveId/approve (Approuver une demande de congé)
+  const approveLeaveMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/hr\/leaves\/([a-zA-Z0-9_-]+)\/approve$/);
+  if (approveLeaveMatch && method === 'POST') {
+    const [_, tenantId, leaveId] = approveLeaveMatch;
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.employees = tenantData.employees || [];
+    tenantData.leaves = tenantData.leaves || [];
+
+    const leave = tenantData.leaves.find(l => l.id === leaveId);
+    if (!leave) return sendJson(404, { success: false, error: 'Demande introuvable' });
+
+    leave.status = 'approved';
+    leave.approver = 'Alexandre Martin (Manager)';
+    leave.approvedAt = Date.now();
+
+    // Déduire les jours du solde de l'employé
+    const emp = tenantData.employees.find(e => e.id === leave.employeeId);
+    if (emp) {
+      if (leave.type === 'paid') {
+        emp.paidLeavesBalance = Math.max(0, (Number(emp.paidLeavesBalance) || 0) - leave.daysCount);
+      } else if (leave.type === 'rtt') {
+        emp.rttBalance = Math.max(0, (Number(emp.rttBalance) || 0) - leave.daysCount);
+      }
+    }
+
+    writeDb(db);
+    return sendJson(200, { success: true, message: 'Demande de congés approuvée et solde actualisé', leave, employee: emp });
+  }
+
+
+  // ==========================================
+  // BANKING, CASHFLOW RUNWAY & AI RECONCILIATION
+  // ==========================================
+
+  // GET /api/tenants/:id/banking
+  const getBankingMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/banking$/);
+  if (getBankingMatch && method === 'GET') {
+    const tenantId = getBankingMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.bankTransactions = tenantData.bankTransactions || [];
+    tenantData.invoices = tenantData.invoices || [];
+    tenantData.quotes = tenantData.quotes || [];
+    tenantData.purchaseOrders = tenantData.purchaseOrders || [];
+
+    // Current bank balance
+    const currentBalance = 48520.00;
+
+    // Incoming pipeline (pending invoices + accepted quotes)
+    const pendingInvoicesAmount = tenantData.invoices
+      .filter(i => i.status === 'sent')
+      .reduce((s, i) => s + (Number(i.amount) || 0), 0);
+
+    const acceptedQuotesAmount = tenantData.quotes
+      .filter(q => q.status === 'won' || q.status === 'accepted')
+      .reduce((s, q) => s + (Number(q.amount) || 0), 0);
+
+    const totalExpectedInflows = pendingInvoicesAmount + (acceptedQuotesAmount * 0.7); // 70% realization
+
+    // Outgoing commitments (PO pending + monthly fixed expenses)
+    const pendingPoAmount = tenantData.purchaseOrders
+      .filter(p => p.status !== 'billed')
+      .reduce((s, p) => s + (Number(p.totalTTC) || 0), 0);
+
+    const monthlyFixedCharges = 12500; // loyer, salaires, serveurs
+
+    // Forecast at 30, 60, 90 days
+    const forecast30 = Math.round(currentBalance + pendingInvoicesAmount - (pendingPoAmount + monthlyFixedCharges));
+    const forecast60 = Math.round(forecast30 + (acceptedQuotesAmount * 0.5) - monthlyFixedCharges);
+    const forecast90 = Math.round(forecast60 + (acceptedQuotesAmount * 0.5) - monthlyFixedCharges);
+
+    const runwayMonths = Math.round((currentBalance / monthlyFixedCharges) * 10) / 10;
+
+    return sendJson(200, {
+      success: true,
+      currentBalance,
+      transactions: tenantData.bankTransactions,
+      runwayMonths,
+      forecast: {
+        now: currentBalance,
+        d30: forecast30,
+        d60: forecast60,
+        d90: forecast90
+      },
+      stats: {
+        unreconciledCount: tenantData.bankTransactions.filter(t => !t.reconciled).length,
+        totalExpectedInflows,
+        monthlyFixedCharges
+      }
+    });
+  }
+
+  // POST /api/tenants/:id/banking/reconcile
+  const postReconcileMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/banking\/reconcile$/);
+  if (postReconcileMatch && method === 'POST') {
+    const tenantId = postReconcileMatch[1];
+    const body = await parseBody(req);
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    tenantData.bankTransactions = tenantData.bankTransactions || [];
+    const btx = tenantData.bankTransactions.find(t => t.id === body.transactionId);
+    if (!btx) return sendJson(404, { success: false, error: 'Transaction introuvable' });
+
+    btx.reconciled = true;
+    btx.reconciledAt = Date.now();
+    btx.reconciledBy = 'IA Rapprochement Automatisé';
+
+    writeDb(db);
+    return sendJson(200, { success: true, message: 'Transaction rapprochée avec succès', transaction: btx });
+  }
+
+  // POST /api/tenants/:id/banking/ai-chat (Copilote IA Financier)
+  const postAiChatMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/banking\/ai-chat$/);
+  if (postAiChatMatch && method === 'POST') {
+    const tenantId = postAiChatMatch[1];
+    const body = await parseBody(req);
+    const prompt = (body.prompt || '').toLowerCase();
+
+    let responseText = "";
+
+    if (prompt.includes('trésorerie') || prompt.includes('solde') || prompt.includes('banque')) {
+      responseText = "Votre solde bancaire actuel est de 48 520,00 €. Grâce à la signature du devis Vortex Gaming (26 400 € TTC) et aux factures en attente (9 100 €), votre visibilité financière est de 4.2 mois de runway sécurisé.";
+    } else if (prompt.includes('tva') || prompt.includes('impot') || prompt.includes('fisc')) {
+      responseText = "Pour la déclaration TVA de ce mois : TVA collectée sur ventes : 3 640,00 € | TVA déductible sur achats : 740,00 €. Votre solde net prévisionnel à reverser au Trésor Public est de 2 900,00 € le 20 du mois.";
+    } else if (prompt.includes('relance') || prompt.includes('retard') || prompt.includes('impayé')) {
+      responseText = "Modèle de relance prêt pour Lumina Studio (Facture FAC-2026-001 de 9 100,00 € échue) :\n\n« Chère Éléonore,\n\nSauf erreur de notre part, la facture FAC-2026-001 du 02/11/2026 concernant la Direction Artistique reste en attente de règlement. Pourriez-vous nous confirmer l'ordre de virement ?\nBien à vous, Alexandre Martin »";
+    } else {
+      responseText = "Analyse financière Marlo : Votre situation de gestion est saine. Ratio de marge commerciale brute : 64%, trésorerie positive et 100% des déclarations fiscales FEC à jour.";
+    }
+
+    return sendJson(200, {
+      success: true,
+      answer: responseText,
+      timestamp: Date.now()
+    });
+  }
+
   // 404 Route API
   return sendJson(404, { success: false, error: 'Route API introuvable' });
 }

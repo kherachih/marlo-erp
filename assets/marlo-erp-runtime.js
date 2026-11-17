@@ -258,8 +258,8 @@
   }
 
   const ROLE_PERMISSIONS = {
-    admin: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'purchases', 'inbox', 'apps', 'settings'],
-    manager: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'purchases', 'inbox'],
+    admin: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'purchases', 'inventory', 'hr', 'banking', 'inbox', 'apps', 'settings'],
+    manager: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'purchases', 'inventory', 'hr', 'banking', 'inbox'],
     member: ['overview', 'tasks', 'projects', 'calendar', 'team', 'activity', 'inbox']
   };
 
@@ -276,7 +276,7 @@
     const role = currentUser.rbacRole || 'admin';
     const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
 
-    const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'purchases', 'inbox'];
+    const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'purchases', 'inventory', 'hr', 'banking', 'inbox'];
 
     managedModules.forEach(modId => {
       const link = document.querySelector(`.side a.snav__item[data-id="${modId}"]`);
@@ -364,7 +364,8 @@
       { id: 'team', title: 'Équipe & Feuilles d\'Heures (Timesheets)', mod: 'team', cat: 'RH', desc: 'Capacité, charge de travail et rentabilité' },
       { id: 'calendar', title: 'Réservation de Salles & Équipements', mod: 'calendar', cat: 'Opérations', desc: 'Planning d\'occupation des studios et postes' },
       { id: 'accounting', title: 'Comptabilité Générale & Fiscalité', mod: 'accounting', cat: 'Finance', desc: 'Grand livre, journaux et suivi de la TVA' },
-      { id: 'purchases', title: 'Achats, Dépenses & Fournisseurs', mod: 'purchases', cat: 'Finance', desc: 'Bons de commande, notes de frais et annuaire fournisseurs' }
+      { id: 'purchases', title: 'Achats, Dépenses & Fournisseurs', mod: 'purchases', cat: 'Finance', desc: 'Bons de commande, notes de frais et annuaire fournisseurs' },
+      { id: 'inventory', title: 'Inventaire & Gestion des Stocks', mod: 'inventory', cat: 'Opérations', desc: 'Gestion des stocks physiques, valorisation PMP, alertes de rupture' }
     ];
 
     const ALL_MODS = [
