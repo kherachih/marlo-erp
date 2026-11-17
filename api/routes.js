@@ -1,6 +1,9 @@
 const { readDb, writeDb, CATALOG_MODULES, PRESETS, DEFAULT_CHART_OF_ACCOUNTS, generateStarterDataForTenant } = require('./db');
+const { renderInvoiceHtml, generateInvoicePdfFile } = require('./invoice-pdf');
+const path = require('path');
+const fs = require('fs');
 
-function handleApiRequest(req, res) {
+async function handleApiRequest(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = url.pathname;
   const method = req.method.toUpperCase();
@@ -599,6 +602,251 @@ function handleApiRequest(req, res) {
       'Access-Control-Allow-Origin': '*'
     });
     return res.end(fecContent);
+  }
+
+  // ==========================================
+  // FACTURATION & DEVIS OFFICIELS (OPTION B)
+  // ==========================================
+
+  // GET /api/tenants/:id/invoices
+  const invoicesMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/invoices$/);
+  if (invoicesMatch && method === 'GET') {
+    const tenantId = invoicesMatch[1];
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const invoices = tenantData.invoices || [];
+    const quotes = tenantData.quotes || [];
+
+    return sendJson(200, {
+      success: true,
+      invoices,
+      quotes,
+      currency: tenant.currency || 'EUR'
+    });
+  }
+
+  // GET /api/tenants/:id/invoices/:invId (JSON)
+  const singleInvoiceMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/invoices\/([a-zA-Z0-9_-]+)$/);
+  if (singleInvoiceMatch && method === 'GET') {
+    const [_, tenantId, invId] = singleInvoiceMatch;
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const inv = (tenantData.invoices || []).find(i => i.id === invId || i.number === invId);
+    if (!inv) return sendJson(404, { success: false, error: 'Facture introuvable' });
+
+    return sendJson(200, { success: true, invoice: inv });
+  }
+
+  // GET /api/tenants/:id/invoices/:invId/html (Vue imprimable officielle)
+  const invoiceHtmlMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/invoices\/([a-zA-Z0-9_-]+)\/html$/);
+  if (invoiceHtmlMatch && method === 'GET') {
+    const [_, tenantId, invId] = invoiceHtmlMatch;
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const inv = (tenantData.invoices || []).find(i => i.id === invId || i.number === invId);
+    if (!inv) return sendJson(404, { success: false, error: 'Facture introuvable' });
+
+    const html = renderInvoiceHtml(tenant, inv, { isQuote: false });
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return res.end(html);
+  }
+
+  // GET /api/tenants/:id/invoices/:invId/pdf (Téléchargement direct du PDF certifié)
+  const invoicePdfMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/invoices\/([a-zA-Z0-9_-]+)\/pdf$/);
+  if (invoicePdfMatch && method === 'GET') {
+    const [_, tenantId, invId] = invoicePdfMatch;
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const inv = (tenantData.invoices || []).find(i => i.id === invId || i.number === invId);
+    if (!inv) return sendJson(404, { success: false, error: 'Facture introuvable' });
+
+    const tempDir = path.resolve(__dirname, '../.scripts');
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+    const pdfPath = path.join(tempDir, `Facture_${inv.number || inv.id}.pdf`);
+
+    try {
+      await generateInvoicePdfFile(tenant, inv, pdfPath, { isQuote: false });
+      const pdfBuffer = fs.readFileSync(pdfPath);
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="Facture_${inv.number || inv.id}.pdf"`,
+        'Content-Length': pdfBuffer.length,
+        'Access-Control-Allow-Origin': '*'
+      });
+      return res.end(pdfBuffer);
+    } catch (err) {
+      console.error('[PDF Export] Erreur:', err);
+      res.writeHead(302, { 'Location': `/api/tenants/${tenantId}/invoices/${invId}/html` });
+      return res.end();
+    }
+  }
+
+  // GET /api/tenants/:id/quotes/:quoteId/html (Vue Devis imprimable)
+  const quoteHtmlMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/quotes\/([a-zA-Z0-9_-]+)\/html$/);
+  if (quoteHtmlMatch && method === 'GET') {
+    const [_, tenantId, quoteId] = quoteHtmlMatch;
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const quote = (tenantData.quotes || []).find(q => q.id === quoteId || q.number === quoteId);
+    if (!quote) return sendJson(404, { success: false, error: 'Devis introuvable' });
+
+    const html = renderInvoiceHtml(tenant, quote, { isQuote: true });
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return res.end(html);
+  }
+
+  // GET /api/tenants/:id/quotes/:quoteId/pdf (Téléchargement direct du Devis PDF)
+  const quotePdfMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/quotes\/([a-zA-Z0-9_-]+)\/pdf$/);
+  if (quotePdfMatch && method === 'GET') {
+    const [_, tenantId, quoteId] = quotePdfMatch;
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    const quote = (tenantData.quotes || []).find(q => q.id === quoteId || q.number === quoteId);
+    if (!quote) return sendJson(404, { success: false, error: 'Devis introuvable' });
+
+    const tempDir = path.resolve(__dirname, '../.scripts');
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+    const pdfPath = path.join(tempDir, `Devis_${quote.number || quote.id}.pdf`);
+
+    try {
+      await generateInvoicePdfFile(tenant, quote, pdfPath, { isQuote: true });
+      const pdfBuffer = fs.readFileSync(pdfPath);
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="Devis_${quote.number || quote.id}.pdf"`,
+        'Content-Length': pdfBuffer.length,
+        'Access-Control-Allow-Origin': '*'
+      });
+      return res.end(pdfBuffer);
+    } catch (err) {
+      console.error('[PDF Export Devis] Erreur:', err);
+      res.writeHead(302, { 'Location': `/api/tenants/${tenantId}/quotes/${quoteId}/html` });
+      return res.end();
+    }
+  }
+
+  // POST /api/tenants/:id/quotes/:quoteId/convert (Convertir un Devis en Facture officielle)
+  const convertQuoteMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/quotes\/([a-zA-Z0-9_-]+)\/convert$/);
+  if (convertQuoteMatch && method === 'POST') {
+    const [_, tenantId, quoteId] = convertQuoteMatch;
+    const db = readDb();
+    const tenant = db.tenants.find(t => t.id === tenantId);
+    if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const tenantData = db.tenantsData[tenantId] || {};
+    tenantData.quotes = tenantData.quotes || [];
+    tenantData.invoices = tenantData.invoices || [];
+    tenantData.accountingEntries = tenantData.accountingEntries || [];
+
+    const quote = tenantData.quotes.find(q => q.id === quoteId || q.number === quoteId);
+    if (!quote) return sendJson(404, { success: false, error: 'Devis introuvable' });
+
+    quote.status = 'accepted';
+    quote.acceptedAt = Date.now();
+
+    const nextNum = (tenantData.invoices.length + 1).toString().padStart(3, '0');
+    const invNumber = `FAC-2026-${nextNum}`;
+
+    const newInvoice = {
+      id: `inv-${Date.now()}`,
+      number: invNumber,
+      client: quote.client,
+      clientContact: quote.clientContact,
+      clientAddress: quote.clientAddress,
+      clientVat: quote.clientVat,
+      projectId: quote.projectId,
+      title: quote.title,
+      amount: quote.amount,
+      issued: Date.now(),
+      due: Date.now() + 30 * 86400000,
+      status: 'sent',
+      items: quote.items || []
+    };
+
+    tenantData.invoices.push(newInvoice);
+
+    // Écriture comptable automatique (Journal des Ventes VT)
+    const rawHT = quote.items ? quote.items.reduce((acc, l) => acc + (Number(l.totalHT) || 0), 0) : Math.round(quote.amount / 1.2);
+    const vat = Math.round(rawHT * 0.2);
+    const ttc = rawHT + vat;
+    const dStr = new Date().toISOString().split('T')[0];
+
+    tenantData.accountingEntries.push(
+      {
+        id: `entry-${Date.now()}-1`,
+        num: `ECR${(tenantData.accountingEntries.length + 1).toString().padStart(5, '0')}`,
+        journal: 'VT',
+        journalName: 'Ventes',
+        date: dStr,
+        piece: invNumber,
+        account: '411000',
+        accountName: 'Clients',
+        label: `${invNumber} - ${quote.client}`,
+        debit: ttc,
+        credit: 0,
+        reconciled: false
+      },
+      {
+        id: `entry-${Date.now()}-2`,
+        num: `ECR${(tenantData.accountingEntries.length + 2).toString().padStart(5, '0')}`,
+        journal: 'VT',
+        journalName: 'Ventes',
+        date: dStr,
+        piece: invNumber,
+        account: '706000',
+        accountName: 'Prestations de services',
+        label: `${invNumber} - ${quote.title}`,
+        debit: 0,
+        credit: rawHT,
+        reconciled: false
+      },
+      {
+        id: `entry-${Date.now()}-3`,
+        num: `ECR${(tenantData.accountingEntries.length + 3).toString().padStart(5, '0')}`,
+        journal: 'VT',
+        journalName: 'Ventes',
+        date: dStr,
+        piece: invNumber,
+        account: '445710',
+        accountName: 'TVA Collectée (20%)',
+        label: `TVA s/ ${invNumber}`,
+        debit: 0,
+        credit: vat,
+        reconciled: false
+      }
+    );
+
+    writeDb(db);
+    return sendJson(200, {
+      success: true,
+      message: 'Devis converti avec succès en facture officielle',
+      invoice: newInvoice,
+      quote
+    });
   }
 
   // 404 Route API

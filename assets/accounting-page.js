@@ -420,7 +420,7 @@ export default function AccountingPage({ sub = 'dashboard', params = [] }) {
                         children: [
                           (0, S.jsx)("td", { style: { color: "var(--muted)", fontSize: "12px" }, children: e.date }),
                           (0, S.jsx)("td", { children: (0, S.jsx)("span", { className: "pill", children: e.journal }) }),
-                          (0, S.jsx)("td", { children: (0, S.jsx)("span", { className: "badge", children: e.piece }) }),
+                          (0, S.jsx)("td", { children: e.piece && e.piece.startsWith("FAC-") ? (0, S.jsxs)("a", { href: `/api/tenants/${tenant.id}/invoices/${e.piece}/html`, target: "_blank", className: "badge", style: { textDecoration: "none", cursor: "pointer", color: "var(--accent)" }, title: "Ouvrir la Facture PDF officielle", children: [e.piece, " ↗"] }) : (0, S.jsx)("span", { className: "badge", children: e.piece }) }),
                           (0, S.jsxs)("td", { children: [(0, S.jsx)("b", { children: e.account }), (0, S.jsx)("small", { style: { display: "block", color: "var(--muted)", fontSize: "10px" }, children: e.accountName })] }),
                           (0, S.jsx)("td", { style: { fontWeight: "500" }, children: e.label }),
                           (0, S.jsx)("td", { className: "r", style: { fontWeight: e.debit > 0 ? "700" : "normal", color: e.debit > 0 ? "var(--ink)" : "var(--muted)" }, children: e.debit > 0 ? formatMoney(e.debit) : "-" }),
@@ -540,7 +540,7 @@ export default function AccountingPage({ sub = 'dashboard', params = [] }) {
                         children: [
                           (0, S.jsx)("td", { style: { color: "var(--muted)", fontSize: "12px", whiteSpace: "nowrap" }, children: e.date }),
                           (0, S.jsx)("td", { children: (0, S.jsx)("span", { className: "pill pill--accent", children: e.journal }) }),
-                          (0, S.jsx)("td", { children: (0, S.jsx)("span", { className: "badge", children: e.piece }) }),
+                          (0, S.jsx)("td", { children: e.piece && e.piece.startsWith("FAC-") ? (0, S.jsxs)("a", { href: `/api/tenants/${tenant.id}/invoices/${e.piece}/html`, target: "_blank", className: "badge", style: { textDecoration: "none", cursor: "pointer", color: "var(--accent)" }, title: "Ouvrir la Facture PDF officielle", children: [e.piece, " ↗"] }) : (0, S.jsx)("span", { className: "badge", children: e.piece }) }),
                           (0, S.jsx)("td", { children: (0, S.jsx)("b", { style: { fontFamily: "monospace", fontSize: "13px" }, children: e.account }) }),
                           (0, S.jsx)("td", { style: { color: "var(--ink-2)", fontSize: "12px" }, children: e.accountName }),
                           (0, S.jsx)("td", { style: { fontWeight: "500" }, children: e.label }),

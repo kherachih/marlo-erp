@@ -581,24 +581,58 @@
           "id": "inv-1",
           "number": "FAC-2026-001",
           "client": "ImmoCorp France",
+          "clientContact": "Éléonore de La Tour",
+          "clientAddress": "12 Avenue Montaigne, 75008 Paris",
+          "clientVat": "FR 84 928374821",
           "projectId": "p1",
           "title": "Acompte de démarrage (40%)",
           "amount": 34000,
-          "issued": 1794206149508,
-          "due": 1796193349508,
+          "issued": 1794232749269,
+          "due": 1796219949269,
           "status": "paid",
-          "paidAt": 1794724549508
+          "paidAt": 1794751149269,
+          "items": [
+            {
+              "description": "Direction artistique & storyboard cinématique 3D",
+              "details": "Conception des planches de styles, modélisation volumétrique et moodboard",
+              "quantity": 1,
+              "unitPriceHT": 9917,
+              "vatRate": 20,
+              "totalHT": 9917
+            },
+            {
+              "description": "Rendu 4K cinématique & textures haute résolution",
+              "details": "Éclairage dynamique, shaders avancés et compositing",
+              "quantity": 1,
+              "unitPriceHT": 18417,
+              "vatRate": 20,
+              "totalHT": 18417
+            }
+          ]
         },
         {
           "id": "inv-2",
           "number": "FAC-2026-002",
           "client": "Grand Paris Bâtiment",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
           "projectId": "p2",
           "title": "Acompte de commande (30%)",
           "amount": 14400,
-          "issued": 1794638149508,
-          "due": 1797057349508,
-          "status": "sent"
+          "issued": 1794664749269,
+          "due": 1797083949269,
+          "status": "sent",
+          "items": [
+            {
+              "description": "Audit préliminaire et initialisation de projet",
+              "details": "Cadrage des exigences techniques et planning de déploiement",
+              "quantity": 1,
+              "unitPriceHT": 12000,
+              "vatRate": 20,
+              "totalHT": 12000
+            }
+          ]
         }
       ],
       "crmLeads": [
@@ -685,7 +719,77 @@
         "ticket": 1,
         "thread": 1,
         "msg": 1
-      }
+      },
+      "quotes": [
+        {
+          "id": "dev-1",
+          "number": "DEV-2026-001",
+          "client": "ImmoCorp France",
+          "clientContact": "Éléonore de La Tour",
+          "clientAddress": "12 Avenue Montaigne, 75008 Paris",
+          "clientVat": "FR 84 928374821",
+          "projectId": "p1",
+          "title": "Proposition Complète - Rénovation Éco-responsable Siège Social",
+          "amount": 85000,
+          "issued": 1793627949269,
+          "validUntil": 1796219949269,
+          "status": "accepted",
+          "acceptedAt": 1794059949269,
+          "items": [
+            {
+              "description": "Phase 1 : Audit stratégique & Moodboard créatif",
+              "quantity": 1,
+              "unitPriceHT": 17708,
+              "vatRate": 20,
+              "totalHT": 17708
+            },
+            {
+              "description": "Phase 2 : Développement & Direction artistique",
+              "quantity": 1,
+              "unitPriceHT": 38958,
+              "vatRate": 20,
+              "totalHT": 38958
+            },
+            {
+              "description": "Phase 3 : Finalisation, Recette & Livrables HD",
+              "quantity": 1,
+              "unitPriceHT": 14167,
+              "vatRate": 20,
+              "totalHT": 14167
+            }
+          ]
+        },
+        {
+          "id": "dev-2",
+          "number": "DEV-2026-002",
+          "client": "Apex Brands",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
+          "projectId": "p2",
+          "title": "Mission Conseil & Accompagnement Stratégique",
+          "amount": 14500,
+          "issued": 1794578349269,
+          "validUntil": 1797170349269,
+          "status": "pending",
+          "items": [
+            {
+              "description": "Ateliers de cadrage stratégique (3 sessions)",
+              "quantity": 3,
+              "unitPriceHT": 1500,
+              "vatRate": 20,
+              "totalHT": 4500
+            },
+            {
+              "description": "Production des livrables et recommandations opérationnelles",
+              "quantity": 1,
+              "unitPriceHT": 7583.33,
+              "vatRate": 20,
+              "totalHT": 7583.33
+            }
+          ]
+        }
+      ]
     },
     "northbank-post": {
       "version": 1,
@@ -841,24 +945,88 @@
           "id": "inv-1",
           "number": "FAC-2026-001",
           "client": "Lumina Studio",
+          "clientContact": "Éléonore de La Tour",
+          "clientAddress": "12 Avenue Montaigne, 75008 Paris",
+          "clientVat": "FR 84 928374821",
           "projectId": "p1",
           "title": "Acompte de démarrage (40%)",
           "amount": 11200,
-          "issued": 1794230537649,
-          "due": 1796217737649,
+          "issued": 1794232749267,
+          "due": 1796219949267,
           "status": "paid",
-          "paidAt": 1794748937649
+          "paidAt": 1794751149267,
+          "items": [
+            {
+              "description": "Direction artistique & storyboard cinématique 3D",
+              "details": "Conception des planches de styles, modélisation volumétrique et moodboard",
+              "quantity": 1,
+              "unitPriceHT": 3267,
+              "vatRate": 20,
+              "totalHT": 3267
+            },
+            {
+              "description": "Rendu 4K cinématique & textures haute résolution",
+              "details": "Éclairage dynamique, shaders avancés et compositing",
+              "quantity": 1,
+              "unitPriceHT": 6067,
+              "vatRate": 20,
+              "totalHT": 6067
+            }
+          ]
         },
         {
           "id": "inv-2",
           "number": "FAC-2026-002",
           "client": "Apex Brands",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
           "projectId": "p2",
           "title": "Acompte de commande (30%)",
           "amount": 5850,
-          "issued": 1794662537649,
-          "due": 1797081737649,
-          "status": "sent"
+          "issued": 1794664749267,
+          "due": 1797083949267,
+          "status": "sent",
+          "items": [
+            {
+              "description": "Audit préliminaire et initialisation de projet",
+              "details": "Cadrage des exigences techniques et planning de déploiement",
+              "quantity": 1,
+              "unitPriceHT": 4875,
+              "vatRate": 20,
+              "totalHT": 4875
+            }
+          ]
+        },
+        {
+          "id": "inv-1794924228449",
+          "number": "FAC-2026-003",
+          "client": "Apex Brands",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
+          "projectId": "p2",
+          "title": "Mission Conseil & Accompagnement Stratégique",
+          "amount": 14500,
+          "issued": 1794924228449,
+          "due": 1797516228449,
+          "status": "sent",
+          "items": [
+            {
+              "description": "Ateliers de cadrage stratégique (3 sessions)",
+              "quantity": 3,
+              "unitPriceHT": 1500,
+              "vatRate": 20,
+              "totalHT": 4500
+            },
+            {
+              "description": "Production des livrables et recommandations opérationnelles",
+              "quantity": 1,
+              "unitPriceHT": 7583.33,
+              "vatRate": 20,
+              "totalHT": 7583.33
+            }
+          ]
         }
       ],
       "crmLeads": [
@@ -1121,6 +1289,48 @@
           "credit": 975,
           "reconciled": false,
           "letter": ""
+        },
+        {
+          "id": "entry-1794924228449-1",
+          "num": "ECR00016",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "date": "2026-11-17",
+          "piece": "FAC-2026-003",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "FAC-2026-003 - Apex Brands",
+          "debit": 14500.33,
+          "credit": 0,
+          "reconciled": false
+        },
+        {
+          "id": "entry-1794924228449-2",
+          "num": "ECR00017",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "date": "2026-11-17",
+          "piece": "FAC-2026-003",
+          "account": "706000",
+          "accountName": "Prestations de services",
+          "label": "FAC-2026-003 - Mission Conseil & Accompagnement Stratégique",
+          "debit": 0,
+          "credit": 12083.33,
+          "reconciled": false
+        },
+        {
+          "id": "entry-1794924228449-3",
+          "num": "ECR00018",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "date": "2026-11-17",
+          "piece": "FAC-2026-003",
+          "account": "445710",
+          "accountName": "TVA Collectée (20%)",
+          "label": "TVA s/ FAC-2026-003",
+          "debit": 0,
+          "credit": 2417,
+          "reconciled": false
         }
       ],
       "chartOfAccounts": [
@@ -1250,7 +1460,747 @@
         "ticket": 1,
         "thread": 1,
         "msg": 1
-      }
+      },
+      "quotes": [
+        {
+          "id": "dev-1",
+          "number": "DEV-2026-001",
+          "client": "Lumina Studio",
+          "clientContact": "Éléonore de La Tour",
+          "clientAddress": "12 Avenue Montaigne, 75008 Paris",
+          "clientVat": "FR 84 928374821",
+          "projectId": "p1",
+          "title": "Proposition Complète - Refonte Identité Visuelle & Direction Artistique",
+          "amount": 28000,
+          "issued": 1793627949267,
+          "validUntil": 1796219949267,
+          "status": "accepted",
+          "acceptedAt": 1794059949267,
+          "items": [
+            {
+              "description": "Phase 1 : Audit stratégique & Moodboard créatif",
+              "quantity": 1,
+              "unitPriceHT": 5833,
+              "vatRate": 20,
+              "totalHT": 5833
+            },
+            {
+              "description": "Phase 2 : Développement & Direction artistique",
+              "quantity": 1,
+              "unitPriceHT": 12833,
+              "vatRate": 20,
+              "totalHT": 12833
+            },
+            {
+              "description": "Phase 3 : Finalisation, Recette & Livrables HD",
+              "quantity": 1,
+              "unitPriceHT": 4667,
+              "vatRate": 20,
+              "totalHT": 4667
+            }
+          ]
+        },
+        {
+          "id": "dev-2",
+          "number": "DEV-2026-002",
+          "client": "Apex Brands",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
+          "projectId": "p2",
+          "title": "Mission Conseil & Accompagnement Stratégique",
+          "amount": 14500,
+          "issued": 1794578349267,
+          "validUntil": 1797170349267,
+          "status": "accepted",
+          "items": [
+            {
+              "description": "Ateliers de cadrage stratégique (3 sessions)",
+              "quantity": 3,
+              "unitPriceHT": 1500,
+              "vatRate": 20,
+              "totalHT": 4500
+            },
+            {
+              "description": "Production des livrables et recommandations opérationnelles",
+              "quantity": 1,
+              "unitPriceHT": 7583.33,
+              "vatRate": 20,
+              "totalHT": 7583.33
+            }
+          ],
+          "acceptedAt": 1794924228449
+        }
+      ]
+    },
+    "atelier-design-co": {
+      "version": 1,
+      "settings": {
+        "studio": "Atelier Design & Co",
+        "name": "Admin Atelier Design & Co",
+        "email": "admin@atelier-design-co.com",
+        "role": "Fondateur / CEO",
+        "city": "Paris",
+        "dayHours": 7.5,
+        "weekStart": 1,
+        "notify": {
+          "assigned": true,
+          "reviews": true,
+          "invoices": true,
+          "digest": true
+        }
+      },
+      "members": [
+        {
+          "id": "owner",
+          "name": "Admin Atelier Design & Co",
+          "role": "Fondateur / CEO",
+          "email": "admin@atelier-design-co.com",
+          "hue": 1,
+          "capacity": 35,
+          "skill": "produce",
+          "status": "in"
+        },
+        {
+          "id": "mem1",
+          "name": "Camille Bernard",
+          "role": "Responsable de Projet",
+          "email": "c.bernard@atelier-design-co.com",
+          "hue": 2,
+          "capacity": 35,
+          "skill": "edit",
+          "status": "in"
+        },
+        {
+          "id": "mem2",
+          "name": "Lucas Martin",
+          "role": "Consultant & Spécialiste",
+          "email": "l.martin@atelier-design-co.com",
+          "hue": 3,
+          "capacity": 35,
+          "skill": "colour",
+          "status": "in"
+        }
+      ],
+      "projects": [
+        {
+          "id": "p1",
+          "name": "Refonte Identité Visuelle & Direction Artistique",
+          "client": "Lumina Studio",
+          "status": "active",
+          "c": 1,
+          "start": 1794232498445,
+          "due": 1797083698445,
+          "budget": 28000,
+          "team": [
+            "owner",
+            "mem1"
+          ]
+        },
+        {
+          "id": "p2",
+          "name": "Campagne Digitale & Vidéo 3D",
+          "client": "Apex Brands",
+          "status": "active",
+          "c": 2,
+          "start": 1794664498445,
+          "due": 1796478898445,
+          "budget": 19500,
+          "team": [
+            "owner",
+            "mem2"
+          ]
+        }
+      ],
+      "tasks": [
+        {
+          "id": "t1",
+          "projectId": "p1",
+          "title": "Cadrage des objectifs et livrables clés",
+          "desc": "Réunion de lancement avec les parties prenantes et validation du périmètre.",
+          "status": "done",
+          "who": "owner",
+          "kind": "produce",
+          "priority": "high",
+          "est": 4,
+          "due": 1794750898445,
+          "doneAt": 1794837298445,
+          "checks": [
+            {
+              "id": "c1",
+              "label": "Brief initial validé",
+              "done": true
+            },
+            {
+              "id": "c2",
+              "label": "Planning partagé",
+              "done": true
+            }
+          ]
+        },
+        {
+          "id": "t2",
+          "projectId": "p1",
+          "title": "Élaboration de la proposition technique / créative",
+          "desc": "Développement des premières pistes et revue intermédiaire.",
+          "status": "doing",
+          "who": "mem1",
+          "kind": "edit",
+          "priority": "high",
+          "est": 12,
+          "due": 1795269298445,
+          "checks": [
+            {
+              "id": "c3",
+              "label": "Première ébauche",
+              "done": true
+            },
+            {
+              "id": "c4",
+              "label": "Revue interne",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "t3",
+          "projectId": "p2",
+          "title": "Revue finale et préparation des livrables",
+          "desc": "Contrôle qualité avant présentation au client.",
+          "status": "todo",
+          "who": "mem2",
+          "kind": "colour",
+          "priority": "med",
+          "est": 8,
+          "due": 1795528498445,
+          "checks": [
+            {
+              "id": "c5",
+              "label": "Vérification conformité",
+              "done": false
+            }
+          ]
+        }
+      ],
+      "invoices": [
+        {
+          "id": "inv-1",
+          "number": "FAC-2026-001",
+          "client": "Lumina Studio",
+          "clientContact": "Éléonore de La Tour",
+          "clientAddress": "12 Avenue Montaigne, 75008 Paris",
+          "clientVat": "FR 84 928374821",
+          "projectId": "p1",
+          "title": "Acompte de démarrage (40%)",
+          "amount": 11200,
+          "issued": 1794232749269,
+          "due": 1796219949269,
+          "status": "paid",
+          "paidAt": 1794751149269,
+          "items": [
+            {
+              "description": "Direction artistique & storyboard cinématique 3D",
+              "details": "Conception des planches de styles, modélisation volumétrique et moodboard",
+              "quantity": 1,
+              "unitPriceHT": 3267,
+              "vatRate": 20,
+              "totalHT": 3267
+            },
+            {
+              "description": "Rendu 4K cinématique & textures haute résolution",
+              "details": "Éclairage dynamique, shaders avancés et compositing",
+              "quantity": 1,
+              "unitPriceHT": 6067,
+              "vatRate": 20,
+              "totalHT": 6067
+            }
+          ]
+        },
+        {
+          "id": "inv-2",
+          "number": "FAC-2026-002",
+          "client": "Apex Brands",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
+          "projectId": "p2",
+          "title": "Acompte de commande (30%)",
+          "amount": 5850,
+          "issued": 1794664749269,
+          "due": 1797083949269,
+          "status": "sent",
+          "items": [
+            {
+              "description": "Audit préliminaire et initialisation de projet",
+              "details": "Cadrage des exigences techniques et planning de déploiement",
+              "quantity": 1,
+              "unitPriceHT": 4875,
+              "vatRate": 20,
+              "totalHT": 4875
+            }
+          ]
+        }
+      ],
+      "crmLeads": [
+        {
+          "id": "lead-atelier-design-co-1",
+          "tenantId": "atelier-design-co",
+          "title": "Production Campagne Vidéo",
+          "company": "Groupe Horizon",
+          "contactName": "Nathalie Roux",
+          "contactEmail": "n.roux@horizon.fr",
+          "contactPhone": "+33 6 11 22 33 44",
+          "value": 28000,
+          "currency": "EUR",
+          "stage": "proposal",
+          "probability": 70,
+          "expectedClose": "2026-11-29",
+          "assignedTo": {
+            "id": "owner",
+            "name": "Admin Atelier Design & Co",
+            "role": "Fondateur / CEO"
+          },
+          "notes": "Demande reçue via le formulaire de qualification. Proposition budgétaire transmise.",
+          "tags": [
+            "Opportunité Qualifiée"
+          ],
+          "createdAt": "2026-11-17T13:54:58.445Z"
+        },
+        {
+          "id": "lead-atelier-design-co-2",
+          "tenantId": "atelier-design-co",
+          "title": "Création Contenus Multimédia",
+          "company": "SoluTech France",
+          "contactName": "Marc Vasseur",
+          "contactEmail": "m.vasseur@solutech.com",
+          "contactPhone": "+33 6 88 99 00 11",
+          "value": 16500,
+          "currency": "EUR",
+          "stage": "new",
+          "probability": 30,
+          "expectedClose": "2026-12-07",
+          "assignedTo": {
+            "id": "mem1",
+            "name": "Camille Bernard",
+            "role": "Responsable"
+          },
+          "notes": "Premier échange très positif. Rendez-vous de cadrage prévu la semaine prochaine.",
+          "tags": [
+            "Lead Entrant"
+          ],
+          "createdAt": "2026-11-17T13:54:58.445Z"
+        }
+      ],
+      "accountingEntries": [
+        {
+          "id": "ecr-atelier-design-co-001",
+          "date": "2026-10-18",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "DEP-INIT",
+          "account": "512000",
+          "accountName": "Banque - Compte Courant",
+          "label": "Dépôt capital social de constitution",
+          "debit": 25000,
+          "credit": 0,
+          "reconciled": true,
+          "letter": "CAP"
+        },
+        {
+          "id": "ecr-atelier-design-co-002",
+          "date": "2026-10-18",
+          "journal": "OD",
+          "journalName": "Opérations Diverses",
+          "piece": "DEP-INIT",
+          "account": "101000",
+          "accountName": "Capital Social Souscrit",
+          "label": "Souscription capital de constitution",
+          "debit": 0,
+          "credit": 25000,
+          "reconciled": true,
+          "letter": "CAP"
+        },
+        {
+          "id": "ecr-atelier-design-co-003",
+          "date": "2026-11-09",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-001",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "FAC-2026-001 - Lumina Studio",
+          "debit": 11200,
+          "credit": 0,
+          "reconciled": true,
+          "letter": "A"
+        },
+        {
+          "id": "ecr-atelier-design-co-004",
+          "date": "2026-11-09",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-001",
+          "account": "706000",
+          "accountName": "Prestations de services",
+          "label": "FAC-2026-001 - Acompte de démarrage (40%)",
+          "debit": 0,
+          "credit": 9333,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-005",
+          "date": "2026-11-09",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-001",
+          "account": "445710",
+          "accountName": "TVA Collectée (20%)",
+          "label": "TVA s/ FAC-2026-001",
+          "debit": 0,
+          "credit": 1867,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-006",
+          "date": "2026-11-15",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "VIR-084",
+          "account": "512000",
+          "accountName": "Banque - Compte Courant",
+          "label": "Règlement FAC-2026-001 - Lumina Studio",
+          "debit": 11200,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-007",
+          "date": "2026-11-15",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "VIR-084",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "Règlement FAC-2026-001 - Lumina Studio",
+          "debit": 0,
+          "credit": 11200,
+          "reconciled": true,
+          "letter": "A"
+        },
+        {
+          "id": "ecr-atelier-design-co-008",
+          "date": "2026-11-07",
+          "journal": "AC",
+          "journalName": "Achats",
+          "piece": "FF-CLOUD-26",
+          "account": "606000",
+          "accountName": "Achats non stockés / SaaS",
+          "label": "Abonnement Cloud, Serveurs & Outils SaaS",
+          "debit": 1200,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-009",
+          "date": "2026-11-07",
+          "journal": "AC",
+          "journalName": "Achats",
+          "piece": "FF-CLOUD-26",
+          "account": "445660",
+          "accountName": "TVA Déductible s/ ABS (20%)",
+          "label": "TVA s/ Abonnements Cloud",
+          "debit": 240,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-010",
+          "date": "2026-11-07",
+          "journal": "AC",
+          "journalName": "Achats",
+          "piece": "FF-CLOUD-26",
+          "account": "401000",
+          "accountName": "Fournisseurs",
+          "label": "Fournisseur Cloud Services Europe",
+          "debit": 0,
+          "credit": 1440,
+          "reconciled": true,
+          "letter": "B"
+        },
+        {
+          "id": "ecr-atelier-design-co-011",
+          "date": "2026-11-13",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "PRLV-AWS",
+          "account": "401000",
+          "accountName": "Fournisseurs",
+          "label": "Règlement Fournisseur Cloud Services",
+          "debit": 1440,
+          "credit": 0,
+          "reconciled": true,
+          "letter": "B"
+        },
+        {
+          "id": "ecr-atelier-design-co-012",
+          "date": "2026-11-13",
+          "journal": "BQ",
+          "journalName": "Banque",
+          "piece": "PRLV-AWS",
+          "account": "512000",
+          "accountName": "Banque - Compte Courant",
+          "label": "Prélèvement Cloud Services Europe",
+          "debit": 0,
+          "credit": 1440,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-013",
+          "date": "2026-11-14",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-002",
+          "account": "411000",
+          "accountName": "Clients",
+          "label": "FAC-2026-002 - Apex Brands",
+          "debit": 5850,
+          "credit": 0,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-014",
+          "date": "2026-11-14",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-002",
+          "account": "706000",
+          "accountName": "Prestations de services",
+          "label": "FAC-2026-002 - Acompte de commande (30%)",
+          "debit": 0,
+          "credit": 4875,
+          "reconciled": false,
+          "letter": ""
+        },
+        {
+          "id": "ecr-atelier-design-co-015",
+          "date": "2026-11-14",
+          "journal": "VT",
+          "journalName": "Ventes",
+          "piece": "FAC-2026-002",
+          "account": "445710",
+          "accountName": "TVA Collectée (20%)",
+          "label": "TVA s/ FAC-2026-002",
+          "debit": 0,
+          "credit": 975,
+          "reconciled": false,
+          "letter": ""
+        }
+      ],
+      "chartOfAccounts": [
+        {
+          "code": "101000",
+          "name": "Capital social souscrit",
+          "category": "Capitaux propres",
+          "class": 1,
+          "type": "equity"
+        },
+        {
+          "code": "401000",
+          "name": "Fournisseurs d'exploitation",
+          "category": "Tiers / Dettes",
+          "class": 4,
+          "type": "payable"
+        },
+        {
+          "code": "411000",
+          "name": "Clients d'exploitation",
+          "category": "Tiers / Créances",
+          "class": 4,
+          "type": "receivable"
+        },
+        {
+          "code": "445660",
+          "name": "TVA Déductible sur autres biens et services (20%)",
+          "category": "Fiscalité / Actif",
+          "class": 4,
+          "type": "tax"
+        },
+        {
+          "code": "445710",
+          "name": "TVA Collectée sur ventes et prestations (20%)",
+          "category": "Fiscalité / Passif",
+          "class": 4,
+          "type": "tax"
+        },
+        {
+          "code": "512000",
+          "name": "Banque - Compte courant professionnel",
+          "category": "Trésorerie",
+          "class": 5,
+          "type": "bank"
+        },
+        {
+          "code": "530000",
+          "name": "Caisse centrale studio",
+          "category": "Trésorerie",
+          "class": 5,
+          "type": "cash"
+        },
+        {
+          "code": "604000",
+          "name": "Sous-traitance & Prestations techniques externes",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "606000",
+          "name": "Achats non stockés & Abonnements SaaS",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "613000",
+          "name": "Locations immobilières & Bureaux",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "623000",
+          "name": "Publicité, Relations publiques & Marketing",
+          "category": "Charges d'exploitation",
+          "class": 6,
+          "type": "expense"
+        },
+        {
+          "code": "706000",
+          "name": "Prestations de services & Honoraires clients",
+          "category": "Produits d'exploitation",
+          "class": 7,
+          "type": "revenue"
+        },
+        {
+          "code": "708000",
+          "name": "Produits des activités annexes",
+          "category": "Produits d'exploitation",
+          "class": 7,
+          "type": "revenue"
+        }
+      ],
+      "sessions": [],
+      "ledger": [
+        {
+          "id": "tx-1",
+          "t": 1794750898445,
+          "kind": "in",
+          "amount": 11200,
+          "desc": "Règlement FAC-2026-001 - Lumina Studio",
+          "cat": "sales"
+        }
+      ],
+      "threads": [],
+      "logs": [],
+      "activity": [
+        {
+          "id": "act-1",
+          "t": 1794923698445,
+          "who": "owner",
+          "what": "a initialisé l'espace ERP pour Atelier Design & Co",
+          "icon": "sparkle",
+          "href": "overview"
+        }
+      ],
+      "opening": 25000,
+      "seq": {
+        "task": 10,
+        "project": 10,
+        "session": 10,
+        "invoice": 10,
+        "tx": 10,
+        "log": 10,
+        "ticket": 1,
+        "thread": 1,
+        "msg": 1
+      },
+      "quotes": [
+        {
+          "id": "dev-1",
+          "number": "DEV-2026-001",
+          "client": "Lumina Studio",
+          "clientContact": "Éléonore de La Tour",
+          "clientAddress": "12 Avenue Montaigne, 75008 Paris",
+          "clientVat": "FR 84 928374821",
+          "projectId": "p1",
+          "title": "Proposition Complète - Refonte Identité Visuelle & Direction Artistique",
+          "amount": 28000,
+          "issued": 1793627949269,
+          "validUntil": 1796219949269,
+          "status": "accepted",
+          "acceptedAt": 1794059949269,
+          "items": [
+            {
+              "description": "Phase 1 : Audit stratégique & Moodboard créatif",
+              "quantity": 1,
+              "unitPriceHT": 5833,
+              "vatRate": 20,
+              "totalHT": 5833
+            },
+            {
+              "description": "Phase 2 : Développement & Direction artistique",
+              "quantity": 1,
+              "unitPriceHT": 12833,
+              "vatRate": 20,
+              "totalHT": 12833
+            },
+            {
+              "description": "Phase 3 : Finalisation, Recette & Livrables HD",
+              "quantity": 1,
+              "unitPriceHT": 4667,
+              "vatRate": 20,
+              "totalHT": 4667
+            }
+          ]
+        },
+        {
+          "id": "dev-2",
+          "number": "DEV-2026-002",
+          "client": "Apex Brands",
+          "clientContact": "Marc Vaneck",
+          "clientAddress": "88 Boulevard Haussmann, 75008 Paris",
+          "clientVat": "FR 19 443219876",
+          "projectId": "p2",
+          "title": "Mission Conseil & Accompagnement Stratégique",
+          "amount": 14500,
+          "issued": 1794578349269,
+          "validUntil": 1797170349269,
+          "status": "pending",
+          "items": [
+            {
+              "description": "Ateliers de cadrage stratégique (3 sessions)",
+              "quantity": 3,
+              "unitPriceHT": 1500,
+              "vatRate": 20,
+              "totalHT": 4500
+            },
+            {
+              "description": "Production des livrables et recommandations opérationnelles",
+              "quantity": 1,
+              "unitPriceHT": 7583.33,
+              "vatRate": 20,
+              "totalHT": 7583.33
+            }
+          ]
+        }
+      ]
     }
   }
 }

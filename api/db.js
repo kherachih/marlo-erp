@@ -477,24 +477,78 @@ function generateStarterDataForTenant(tenant) {
       id: 'inv-1',
       number: 'FAC-2026-001',
       client: projects[0].client,
+      clientContact: 'Éléonore de La Tour',
+      clientAddress: '12 Avenue Montaigne, 75008 Paris',
+      clientVat: 'FR 84 928374821',
       projectId: 'p1',
       title: 'Acompte de démarrage (40%)',
       amount: Math.round(projects[0].budget * 0.4),
       issued: now - 8 * day,
       due: now + 15 * day,
       status: 'paid',
-      paidAt: now - 2 * day
+      paidAt: now - 2 * day,
+      items: [
+        { description: 'Direction artistique & storyboard cinématique 3D', details: 'Conception des planches de styles, modélisation volumétrique et moodboard', quantity: 1, unitPriceHT: Math.round((projects[0].budget * 0.4 / 1.2) * 0.35), vatRate: 20, totalHT: Math.round((projects[0].budget * 0.4 / 1.2) * 0.35) },
+        { description: 'Rendu 4K cinématique & textures haute résolution', details: 'Éclairage dynamique, shaders avancés et compositing', quantity: 1, unitPriceHT: Math.round((projects[0].budget * 0.4 / 1.2) * 0.65), vatRate: 20, totalHT: Math.round((projects[0].budget * 0.4 / 1.2) * 0.65) }
+      ]
     },
     {
       id: 'inv-2',
       number: 'FAC-2026-002',
       client: projects[1].client,
+      clientContact: 'Marc Vaneck',
+      clientAddress: '88 Boulevard Haussmann, 75008 Paris',
+      clientVat: 'FR 19 443219876',
       projectId: 'p2',
       title: 'Acompte de commande (30%)',
       amount: Math.round(projects[1].budget * 0.3),
       issued: now - 3 * day,
       due: now + 25 * day,
-      status: 'sent'
+      status: 'sent',
+      items: [
+        { description: 'Audit préliminaire et initialisation de projet', details: 'Cadrage des exigences techniques et planning de déploiement', quantity: 1, unitPriceHT: Math.round(projects[1].budget * 0.3 / 1.2), vatRate: 20, totalHT: Math.round(projects[1].budget * 0.3 / 1.2) }
+      ]
+    }
+  ];
+
+  const quotes = [
+    {
+      id: 'dev-1',
+      number: 'DEV-2026-001',
+      client: projects[0].client,
+      clientContact: 'Éléonore de La Tour',
+      clientAddress: '12 Avenue Montaigne, 75008 Paris',
+      clientVat: 'FR 84 928374821',
+      projectId: 'p1',
+      title: 'Proposition Complète - ' + projects[0].name,
+      amount: projects[0].budget,
+      issued: now - 15 * day,
+      validUntil: now + 15 * day,
+      status: 'accepted',
+      acceptedAt: now - 10 * day,
+      items: [
+        { description: 'Phase 1 : Audit stratégique & Moodboard créatif', quantity: 1, unitPriceHT: Math.round(projects[0].budget * 0.25 / 1.2), vatRate: 20, totalHT: Math.round(projects[0].budget * 0.25 / 1.2) },
+        { description: 'Phase 2 : Développement & Direction artistique', quantity: 1, unitPriceHT: Math.round(projects[0].budget * 0.55 / 1.2), vatRate: 20, totalHT: Math.round(projects[0].budget * 0.55 / 1.2) },
+        { description: 'Phase 3 : Finalisation, Recette & Livrables HD', quantity: 1, unitPriceHT: Math.round(projects[0].budget * 0.20 / 1.2), vatRate: 20, totalHT: Math.round(projects[0].budget * 0.20 / 1.2) }
+      ]
+    },
+    {
+      id: 'dev-2',
+      number: 'DEV-2026-002',
+      client: 'Apex Brands',
+      clientContact: 'Marc Vaneck',
+      clientAddress: '88 Boulevard Haussmann, 75008 Paris',
+      clientVat: 'FR 19 443219876',
+      projectId: 'p2',
+      title: 'Mission Conseil & Accompagnement Stratégique',
+      amount: 14500,
+      issued: now - 4 * day,
+      validUntil: now + 26 * day,
+      status: 'pending',
+      items: [
+        { description: 'Ateliers de cadrage stratégique (3 sessions)', quantity: 3, unitPriceHT: 1500, vatRate: 20, totalHT: 4500 },
+        { description: 'Production des livrables et recommandations opérationnelles', quantity: 1, unitPriceHT: 7583.33, vatRate: 20, totalHT: 7583.33 }
+      ]
     }
   ];
 
@@ -806,6 +860,7 @@ function generateStarterDataForTenant(tenant) {
     projects,
     tasks,
     invoices,
+    quotes,
     crmLeads,
     accountingEntries,
     chartOfAccounts: DEFAULT_CHART_OF_ACCOUNTS,

@@ -845,9 +845,24 @@ export default function CrmPage({ sub = 'pipeline', params = [] }) {
                     onClick: () => { convertLead(selectedLead); setSelectedLead(null); },
                     children: [(0, S.jsx)(i, { name: "check" }), " Convertir en Projet & Facture Odoo"]
                   }),
+                  (0, S.jsx)("a", {
+                    href: `/api/tenants/${tenant.id}/quotes/dev-1/pdf`,
+                    target: "_blank",
+                    className: "btn btn--ghost btn--block",
+                    style: { textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginTop: "8px" },
+                    children: [(0, S.jsx)(i, { name: "receipt" }), " 📄 Télécharger Devis PDF (DEV-2026-001)"]
+                  }),
+                  (0, S.jsx)("a", {
+                    href: `/api/tenants/${tenant.id}/quotes/dev-1/html`,
+                    target: "_blank",
+                    className: "btn btn--ghost btn--block",
+                    style: { textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginTop: "6px" },
+                    children: ["👁️ Aperçu Devis Imprimable ↗"]
+                  }),
                   (0, S.jsx)("button", {
                     type: "button",
                     className: "btn btn--ghost btn--block",
+                    style: { marginTop: "6px" },
                     onClick: () => setSelectedLead(null),
                     children: "Fermer"
                   })

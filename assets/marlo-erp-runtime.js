@@ -22,6 +22,7 @@
 
         if (state.currentTenant) {
           localStorage.setItem('marlo_erp_tenant_id', state.currentTenant.id);
+          localStorage.setItem('marlo_erp_tenant_name', state.currentTenant.name);
         }
 
         setupSidebarEnhancements();
@@ -209,6 +210,7 @@
 
     state.currentTenant = target;
     localStorage.setItem('marlo_erp_tenant_id', target.id);
+    localStorage.setItem('marlo_erp_tenant_name', target.name);
 
     // Recharger le store réactif React Marlo avec les données isolées du tenant
     if (typeof window.MARLO_RELOAD_STORE === 'function') {
