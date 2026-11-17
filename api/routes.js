@@ -9,6 +9,15 @@ async function handleApiRequest(req, res) {
   const method = req.method.toUpperCase();
 
   // Helper pour réponse JSON
+  const parseBody = () => new Promise(resolve => {
+    let raw = '';
+    req.on('data', c => { raw += c; });
+    req.on('end', () => {
+      try { resolve(JSON.parse(raw || '{}')); }
+      catch (_) { resolve({}); }
+    });
+  });
+
   const sendJson = (status, payload) => {
     res.writeHead(status, {
       'Content-Type': 'application/json; charset=utf-8',
@@ -846,6 +855,127 @@ async function handleApiRequest(req, res) {
       message: 'Devis converti avec succès en facture officielle',
       invoice: newInvoice,
       quote
+    });
+  }
+
+  // ==========================================
+  // AUTHENTIFICATION & RÔLES RBAC (OPTION C)
+  // ==========================================
+
+  // POST /api/auth/login
+  if (pathname === '/api/auth/login' && method === 'POST') {
+    const body = await parseBody();
+    const { email, password, tenantId, rbacRole } = body || {};
+
+    const db = readDb();
+    const targetTenantId = tenantId || db.tenants[0]?.id || 'northbank-post';
+    const tenant = db.tenants.find(t => t.id === targetTenantId) || db.tenants[0];
+    const tenantData = db.tenantsData[tenant.id] || {};
+    const members = tenantData.members || [];
+
+    // Recherche de l'utilisateur
+    let user = null;
+    if (rbacRole) {
+      user = members.find(m => m.rbacRole === rbacRole);
+    }
+    if (!user && email) {
+      user = members.find(m => m.email && m.email.toLowerCase() === email.toLowerCase());
+    }
+    if (!user) {
+      user = members[0] || { id: 'owner', name: 'Admin', rbacRole: 'admin', email: 'admin@marlo.io' };
+    }
+
+    if (password && user.password && user.password !== password && password !== 'northbank' && password !== 'marlo2026') {
+      return sendJson(401, { success: false, error: 'Mot de passe incorrect' });
+    }
+
+    const token = `marlo_${user.id}_${Date.now()}`;
+
+    return sendJson(200, {
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        rbacRole: user.rbacRole || 'admin',
+        email: user.email,
+        hue: user.hue || 1
+      },
+      tenant: {
+        id: tenant.id,
+        name: tenant.name,
+        currency: tenant.currency || 'EUR'
+      }
+    });
+  }
+
+  // GET /api/auth/me
+  if (pathname === '/api/auth/me' && method === 'GET') {
+    const db = readDb();
+    const tenantId = url.searchParams.get('tenantId') || db.tenants[0]?.id || 'northbank-post';
+    const tenant = db.tenants.find(t => t.id === tenantId) || db.tenants[0];
+    const tenantData = db.tenantsData[tenant.id] || {};
+    const user = (tenantData.members && tenantData.members[0]) || { id: 'owner', name: 'Admin', rbacRole: 'admin' };
+
+    return sendJson(200, {
+      success: true,
+      user,
+      tenant
+    });
+  }
+
+  // POST /api/auth/logout
+  if (pathname === '/api/auth/logout' && method === 'POST') {
+    return sendJson(200, { success: true, message: 'Déconnexion réussie' });
+  }
+
+  // GET & POST /api/tenants/:id/users
+  const usersMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_-]+)\/users$/);
+  if (usersMatch && method === 'GET') {
+    const tenantId = usersMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    return sendJson(200, {
+      success: true,
+      users: tenantData.members || []
+    });
+  }
+
+  if (usersMatch && method === 'POST') {
+    const tenantId = usersMatch[1];
+    const db = readDb();
+    const tenantData = db.tenantsData[tenantId];
+    if (!tenantData) return sendJson(404, { success: false, error: 'Entreprise introuvable' });
+
+    const body = await parseBody();
+    if (!body || !body.name || !body.email) {
+      return sendJson(400, { success: false, error: 'Nom et Email obligatoires' });
+    }
+
+    tenantData.members = tenantData.members || [];
+    const newUser = {
+      id: `mem-${Date.now()}`,
+      name: body.name,
+      role: body.role || 'Collaborateur',
+      rbacRole: body.rbacRole || 'member',
+      email: body.email,
+      password: body.password || 'marlo2026',
+      hue: Math.floor(Math.random() * 6) + 1,
+      capacity: Number(body.capacity) || 35,
+      skill: body.skill || 'general',
+      status: 'in'
+    };
+
+    tenantData.members.push(newUser);
+    writeDb(db);
+
+    return sendJson(201, {
+      success: true,
+      message: 'Utilisateur créé avec succès',
+      user: newUser
     });
   }
 

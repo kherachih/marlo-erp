@@ -44,6 +44,15 @@
       }
     });
 
+    // Écouteurs RBAC : Changement d'utilisateur & Sécurité de routage
+    window.addEventListener('marlo:user-changed', () => {
+      updateSidebarVisibility();
+      checkRoutePermissions();
+    });
+    window.addEventListener('hashchange', () => {
+      checkRoutePermissions();
+    });
+
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeAllModals();
     });
@@ -248,17 +257,92 @@
     showToast(`Espace commuté : ${target.name}`);
   }
 
+  const ROLE_PERMISSIONS = {
+    admin: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'inbox', 'apps', 'settings'],
+    manager: ['overview', 'crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'inbox'],
+    member: ['overview', 'tasks', 'projects', 'calendar', 'team', 'activity', 'inbox']
+  };
+
   function updateSidebarVisibility() {
     if (!state.currentTenant) return;
     const active = state.currentTenant.activeModules || [];
+
+    let currentUser;
+    try {
+      currentUser = JSON.parse(localStorage.getItem('marlo_auth_user') || '{"rbacRole":"admin","name":"Admin"}');
+    } catch (_) {
+      currentUser = { rbacRole: 'admin', name: 'Admin' };
+    }
+    const role = currentUser.rbacRole || 'admin';
+    const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
+
     const managedModules = ['crm', 'tasks', 'projects', 'calendar', 'team', 'activity', 'budget', 'accounting', 'inbox'];
 
     managedModules.forEach(modId => {
       const link = document.querySelector(`.side a.snav__item[data-id="${modId}"]`);
       if (link) {
-        link.style.display = active.includes(modId) ? '' : 'none';
+        const isAllowed = active.includes(modId) && allowed.includes(modId);
+        link.style.display = isAllowed ? '' : 'none';
       }
     });
+
+    ['apps', 'settings'].forEach(modId => {
+      const link = document.querySelector(`.side a.snav__item[data-id="${modId}"]`);
+      if (link) {
+        link.style.display = allowed.includes(modId) ? '' : 'none';
+      }
+    });
+
+    updateUserRoleBadge(currentUser);
+  }
+
+  function updateUserRoleBadge(user) {
+    const roleConfig = {
+      admin: { label: 'Admin', color: 'var(--accent, #ea580c)' },
+      manager: { label: 'Manager', color: '#0284c7' },
+      member: { label: 'Membre', color: '#16a34a' }
+    };
+    const conf = roleConfig[user.rbacRole] || roleConfig.admin;
+
+    const meBtn = document.querySelector('.top .me');
+    if (meBtn) {
+      let badge = meBtn.querySelector('.rbac-badge');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'rbac-badge';
+        meBtn.appendChild(badge);
+      }
+      badge.style.cssText = `
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: ${conf.color}1a;
+        color: ${conf.color};
+        border: 1px solid ${conf.color}44;
+        margin-left: 8px;
+        display: inline-block;
+      `;
+      badge.innerText = conf.label;
+    }
+  }
+
+  function checkRoutePermissions() {
+    const hash = location.hash.replace(/^#\/?/, '').split('/')[0];
+    let currentUser;
+    try {
+      currentUser = JSON.parse(localStorage.getItem('marlo_auth_user') || '{"rbacRole":"admin"}');
+    } catch (_) {
+      currentUser = { rbacRole: 'admin' };
+    }
+    const role = currentUser.rbacRole || 'admin';
+    const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
+
+    if (hash && ['accounting', 'settings', 'budget', 'crm'].includes(hash) && !allowed.includes(hash)) {
+      console.warn(`[RBAC] Accès restreint à #${hash} pour le profil ${role}`);
+      location.hash = '#/overview';
+    }
   }
 
   function openNewTenantModal() {
