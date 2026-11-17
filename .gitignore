@@ -1,0 +1,17 @@
+# Recursive symlink
+marlo/
+
+# Temporary test scripts and profiles
+.scripts/
+
+# Screenshots
+screenshot_*.png
+crop_*.png
+
+# Node & logs
+node_modules/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
