@@ -5,7 +5,7 @@
       "name": "Northbank Post",
       "slug": "northbank-post",
       "industry": "design_agency",
-      "currency": "EUR",
+      "currency": "DZD",
       "plan": "enterprise",
       "activeModules": [
         "overview",
@@ -23,7 +23,9 @@
         "hr",
         "banking"
       ],
-      "createdAt": "2026-11-01T08:00:00.000Z"
+      "createdAt": "2026-11-01T08:00:00.000Z",
+      "country": "DZ",
+      "fiscalData": {}
     },
     {
       "id": "atelier-design-co",

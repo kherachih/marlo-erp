@@ -1,4 +1,5 @@
 const { readDb, writeDb, CATALOG_MODULES, PRESETS, DEFAULT_CHART_OF_ACCOUNTS, generateStarterDataForTenant } = require('./db');
+const { FISCAL_PACKAGES, DEFAULT_EXCHANGE_RATES } = require('./fiscal-packages');
 const { renderInvoiceHtml, generateInvoicePdfFile } = require('./invoice-pdf');
 const path = require('path');
 const fs = require('fs');
@@ -56,6 +57,55 @@ async function handleApiRequest(req, res) {
       console.error('[BROWSER ERROR]:', JSON.stringify(err, null, 2));
       return sendJson(200, { ok: true });
     }).catch(() => sendJson(200, { ok: false }));
+  }
+
+  // 0. Fiscal Packages & Currency Exchange Rates
+  if (pathname === '/api/fiscal-packages' && method === 'GET') {
+    return sendJson(200, { success: true, packages: Object.values(FISCAL_PACKAGES) });
+  }
+
+  const pkgMatch = pathname.match(/^\/api\/fiscal-packages\/([a-zA-Z]{2})$/);
+  if (pkgMatch && method === 'GET') {
+    const code = pkgMatch[1].toUpperCase();
+    const pkg = FISCAL_PACKAGES[code];
+    if (!pkg) return sendJson(404, { success: false, error: 'Package fiscal non trouvé.' });
+    return sendJson(200, { success: true, package: pkg });
+  }
+
+  if (pathname === '/api/currencies/rates' && method === 'GET') {
+    return sendJson(200, {
+      success: true,
+      base: 'EUR',
+      rates: DEFAULT_EXCHANGE_RATES,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Mise à jour du profil fiscal d'un tenant
+  const fiscalProfileMatch = pathname.match(/^\/api\/tenants\/([a-zA-Z0-9_\-]+)\/fiscal-profile$/);
+  if (fiscalProfileMatch && (method === 'PUT' || method === 'POST')) {
+    return getBody().then(data => {
+      const tenantId = fiscalProfileMatch[1];
+      const db = readDb();
+      const tenant = db.tenants.find(t => t.id === tenantId || t.slug === tenantId);
+      if (!tenant) return sendJson(404, { success: false, error: 'Entreprise introuvable.' });
+
+      tenant.country = data.country || tenant.country || 'DZ';
+      tenant.currency = data.currency || tenant.currency || 'DZD';
+      tenant.fiscalData = {
+        ...(tenant.fiscalData || {}),
+        ...(data.fiscalData || {}),
+        nif: data.nif || (tenant.fiscalData && tenant.fiscalData.nif),
+        nis: data.nis || (tenant.fiscalData && tenant.fiscalData.nis),
+        rc: data.rc || (tenant.fiscalData && tenant.fiscalData.rc),
+        ai: data.ai || (tenant.fiscalData && tenant.fiscalData.ai),
+        matricule_fiscal: data.matricule_fiscal || (tenant.fiscalData && tenant.fiscalData.matricule_fiscal),
+        vatNumber: data.vatNumber || tenant.vatNumber
+      };
+
+      writeDb(db);
+      return sendJson(200, { success: true, tenant, fiscalProfile: tenant.fiscalData });
+    });
   }
 
   // 1. GET /api/modules : Catalogue complet des modules Odoo

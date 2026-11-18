@@ -1,0 +1,112 @@
+/**
+ * Marlo ERP - Right-To-Left (RTL) Stylesheet
+ * Native Arabic (العربية) UI Layout & Typographic Support
+ */
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Urbanist', 'Segoe UI', Tahoma, -apple-system, sans-serif;
+}
+
+[dir="rtl"] body {
+  direction: rtl;
+}
+
+/* 1. Sidebar & Navigation */
+[dir="rtl"] .side {
+  border-left: 1px solid var(--line);
+  border-right: none;
+}
+
+[dir="rtl"] .side nav.snav a {
+  flex-direction: row;
+  text-align: right;
+}
+
+[dir="rtl"] .side nav.snav a svg.ico,
+[dir="rtl"] .side nav.snav a .ico {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .side nav.snav .snav__tag {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* 2. Topbar & Header */
+[dir="rtl"] .topbar {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .topbar .topbar__search {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+[dir="rtl"] .topbar input[type="search"] {
+  text-align: right;
+  padding-right: 32px;
+  padding-left: 12px;
+}
+
+/* 3. Tables & Data Grids */
+[dir="rtl"] table th,
+[dir="rtl"] table td {
+  text-align: right;
+}
+
+[dir="rtl"] table th:last-child,
+[dir="rtl"] table td:last-child {
+  text-align: left;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
+[dir="rtl"] .text-left {
+  text-align: right !important;
+}
+
+/* 4. Dropdowns & Modals */
+[dir="rtl"] .pop,
+[dir="rtl"] .dropdown-menu {
+  text-align: right;
+}
+
+[dir="rtl"] .modal-wrap dialog {
+  text-align: right;
+}
+
+[dir="rtl"] .erp-chevron {
+  transform: scaleX(-1);
+}
+
+/* 5. Buttons and Icon Alignment */
+[dir="rtl"] .btn {
+  flex-direction: row;
+}
+
+[dir="rtl"] .btn svg,
+[dir="rtl"] .btn .ico {
+  margin-left: 6px;
+  margin-right: 0;
+}
+
+/* 6. Form Fields & Badges */
+[dir="rtl"] label {
+  text-align: right;
+}
+
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+[dir="rtl"] .badge {
+  direction: ltr;
+  display: inline-flex;
+}

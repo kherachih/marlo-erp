@@ -164,6 +164,9 @@
     html += `
       </div>
       <div style="border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+        <button id="erp-fiscal-profile-btn" class="btn btn--subtle btn--sm" style="width:100%; justify-content:center; gap:6px; font-size:11px;">
+          <span>🌍</span> Localisation Fiscale & Devises
+        </button>
         <button id="erp-new-tenant-btn" class="btn btn--primary btn--sm" style="width:100%; justify-content:center; gap:6px;">
           <span>+</span> Inscrire une Entreprise
         </button>
@@ -187,6 +190,14 @@
         dropdown.remove();
       });
     });
+
+    const fiscalBtn = dropdown.querySelector('#erp-fiscal-profile-btn');
+    if (fiscalBtn) {
+      fiscalBtn.addEventListener('click', () => {
+        dropdown.remove();
+        openFiscalProfileModal();
+      });
+    }
 
     const newBtn = dropdown.querySelector('#erp-new-tenant-btn');
     if (newBtn) {
@@ -826,11 +837,278 @@
     renderModalContent();
   }
 
+  function openFiscalProfileModal() {
+    closeAllModals();
+
+    const t = state.currentTenant || {};
+    let selectedCountry = t.country || (t.currency === 'DZD' ? 'DZ' : t.currency === 'TND' ? 'TN' : 'FR');
+    let selectedCurrency = t.currency || (selectedCountry === 'DZ' ? 'DZD' : selectedCountry === 'TN' ? 'TND' : 'EUR');
+    let fiscalData = { ...(t.fiscalData || {}) };
+
+    const COUNTRIES = [
+      { code: 'DZ', name: 'Algérie (الجمهورية الجزائرية)', flag: '🇩🇿', curr: 'DZD', note: 'SCF · TVA 19% & 9% · NIF, NIS, RC, AI' },
+      { code: 'TN', name: 'Tunisie (الجمهورية التونسية)', flag: '🇹🇳', curr: 'TND', note: 'SCE · TVA 19%, 13%, 7% · 3 décimales (millimes)' },
+      { code: 'FR', name: 'France', flag: '🇫🇷', curr: 'EUR', note: 'PCG · TVA 20%, 10%, 5.5% · FEC & Factur-X' },
+      { code: 'MA', name: 'Maroc (المملكة المغربية)', flag: '🇲🇦', curr: 'MAD', note: 'PCGM · TVA 20%, 14%, 10% · ICE obligatoire' },
+      { code: 'US', name: 'United States', flag: '🇺🇸', curr: 'USD', note: 'US GAAP · Sales Tax par État & Comté · 1099' },
+      { code: 'DE', name: 'Deutschland', flag: '🇩🇪', curr: 'EUR', note: 'SKR03 / SKR04 · MwSt 19%, 7% · GoBD & DATEV' },
+      { code: 'CH', name: 'Suisse / Schweiz', flag: '🇨🇭', curr: 'CHF', note: 'Swiss GAAP · TVA 8.1% · Swiss QR-Bill' },
+      { code: 'AE', name: 'United Arab Emirates (الإمارات)', flag: '🇦🇪', curr: 'AED', note: 'FTA VAT 5% · IFRS · TRN' },
+      { code: 'SA', name: 'Saudi Arabia (السعودية)', flag: '🇸🇦', curr: 'SAR', note: 'ZATCA Phase 2 FATOORA · TVA 15%' }
+    ];
+
+    const CURRENCIES = [
+      { code: 'DZD', symbol: 'د.ج', name: 'Dinar Algérien (DZD)' },
+      { code: 'TND', symbol: 'د.ت', name: 'Dinar Tunisien (TND - 3 déc.)' },
+      { code: 'EUR', symbol: '€', name: 'Euro (EUR)' },
+      { code: 'USD', symbol: '$', name: 'US Dollar (USD)' },
+      { code: 'GBP', symbol: '£', name: 'Livre Sterling (GBP)' },
+      { code: 'CHF', symbol: 'CHF', name: 'Franc Suisse (CHF)' },
+      { code: 'CAD', symbol: 'CA$', name: 'Dollar Canadien (CAD)' },
+      { code: 'MAD', symbol: 'د.م.', name: 'Dirham Marocain (MAD)' },
+      { code: 'AED', symbol: 'د.إ', name: 'Dirham Émirati (AED)' },
+      { code: 'SAR', symbol: 'ر.س', name: 'Riyal Saoudien (SAR)' }
+    ];
+
+    const modal = document.createElement('div');
+    modal.id = 'erp-fiscal-modal';
+    modal.className = 'modal-wrap';
+    modal.style.cssText = `
+      position: fixed; inset: 0; z-index: 99999999;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px);
+      padding: 16px;
+    `;
+
+    const render = () => {
+      const cObj = COUNTRIES.find(c => c.code === selectedCountry) || COUNTRIES[0];
+
+      let countryFieldsHtml = '';
+      if (selectedCountry === 'DZ') {
+        countryFieldsHtml = `
+          <div style="background:var(--card-2); padding:12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px;">
+            <div style="font-size:12px; font-weight:700; color:var(--accent); margin-bottom:4px;">🇩🇿 Identifiants Fiscaux Algériens Obligatoires</div>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">Requis sur toutes les factures et devis sous le Système Comptable Financier (SCF).</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">NIF (15 chiffres) *</label>
+                <input type="text" id="fiscal-nif" value="${fiscalData.nif || '099816001234567'}" class="input input--sm" style="width:100%; font-family:monospace;" placeholder="099816001234567" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">NIS *</label>
+                <input type="text" id="fiscal-nis" value="${fiscalData.nis || '000116012345678'}" class="input input--sm" style="width:100%; font-family:monospace;" placeholder="000116012345678" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Registre de Commerce (RC) *</label>
+                <input type="text" id="fiscal-rc" value="${fiscalData.rc || '16/00-0123456B20'}" class="input input--sm" style="width:100%;" placeholder="16/00-0123456B20" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Article d'Imposition (AI) *</label>
+                <input type="text" id="fiscal-ai" value="${fiscalData.ai || '16012345678'}" class="input input--sm" style="width:100%; font-family:monospace;" placeholder="16012345678" />
+              </div>
+            </div>
+            <div style="font-size:11px; color:var(--muted); margin-top:8px;">
+              ⚡ <b>TVA :</b> 19% (Normal), 9% (Réduit), 0% (Exonéré) · <b>Timbre :</b> 1% sur règlements espèces.
+            </div>
+          </div>
+        `;
+      } else if (selectedCountry === 'TN') {
+        countryFieldsHtml = `
+          <div style="background:var(--card-2); padding:12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px;">
+            <div style="font-size:12px; font-weight:700; color:var(--accent); margin-bottom:4px;">🇹🇳 Identifiants Fiscaux Tunisiens</div>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">Système Comptable des Entreprises (SCE) et Code TVA.</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Matricule Fiscal (MF) *</label>
+                <input type="text" id="fiscal-mf" value="${fiscalData.matricule_fiscal || '1234567/A/M/000'}" class="input input--sm" style="width:100%; font-family:monospace;" placeholder="1234567/A/M/000" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Registre RNE</label>
+                <input type="text" id="fiscal-rne" value="${fiscalData.rne || '1234567X'}" class="input input--sm" style="width:100%;" placeholder="1234567X" />
+              </div>
+            </div>
+            <div style="font-size:11px; color:var(--muted); margin-top:8px;">
+              ⚡ <b>Format monétaire :</b> 3 décimales (Millimes) · <b>Droit de timbre :</b> 1.000 TND automatique.
+            </div>
+          </div>
+        `;
+      } else if (selectedCountry === 'MA') {
+        countryFieldsHtml = `
+          <div style="background:var(--card-2); padding:12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px;">
+            <div style="font-size:12px; font-weight:700; color:var(--accent); margin-bottom:4px;">🇲🇦 Identifiants Légaux Marocains</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">ICE (15 chiffres) *</label>
+                <input type="text" id="fiscal-ice" value="${fiscalData.ice || '001234567000089'}" class="input input--sm" style="width:100%; font-family:monospace;" placeholder="001234567000089" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Identifiant Fiscal (IF)</label>
+                <input type="text" id="fiscal-if" value="${fiscalData.identifiant_fiscal || '12345678'}" class="input input--sm" style="width:100%;" placeholder="12345678" />
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        countryFieldsHtml = `
+          <div style="background:var(--card-2); padding:12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px;">
+            <div style="font-size:12px; font-weight:700; color:var(--accent); margin-bottom:4px;">🇫🇷 Identifiants Fiscaux Français & Européens</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Numéro SIRET</label>
+                <input type="text" id="fiscal-siret" value="${t.siret || '849 203 912 00024'}" class="input input--sm" style="width:100%;" />
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">TVA Intracommunautaire</label>
+                <input type="text" id="fiscal-vat" value="${t.vatNumber || 'FR 32 849203912'}" class="input input--sm" style="width:100%;" />
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      modal.innerHTML = `
+        <dialog open style="
+          width: 540px; max-width: 95vw; background: var(--card); color: var(--ink);
+          border: 1px solid var(--line-2); border-radius: 14px; padding: 24px;
+          box-shadow: 0 24px 60px rgba(0,0,0,0.5); font-family: var(--font); position: relative;
+        ">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:24px;">🌍</span>
+              <div>
+                <h3 style="margin:0; font-size:18px; font-weight:700;">Localisation Fiscale & Devises</h3>
+                <small style="color:var(--muted); font-size:12px;">Configuration internationale pour : <b>${t.name}</b></small>
+              </div>
+            </div>
+            <button id="close-fiscal-modal-btn" class="btn btn--ghost btn--sm" style="font-size:16px; padding:4px 8px;">✕</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+            <div>
+              <label style="font-size:12px; font-weight:700; display:block; margin-bottom:6px;">Pays de domiciliation fiscale :</label>
+              <select id="fiscal-country-select" class="input input--sm" style="width:100%; height:36px; font-weight:600;">
+                ${COUNTRIES.map(c => `
+                  <option value="${c.code}" ${c.code === selectedCountry ? 'selected' : ''}>
+                    ${c.flag} ${c.name}
+                  </option>
+                `).join('')}
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; display:block; margin-bottom:6px;">Devise principale de facturation :</label>
+              <select id="fiscal-currency-select" class="input input--sm" style="width:100%; height:36px; font-weight:600;">
+                ${CURRENCIES.map(curr => `
+                  <option value="${curr.code}" ${curr.code === selectedCurrency ? 'selected' : ''}>
+                    ${curr.symbol} — ${curr.name}
+                  </option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div style="font-size:12px; color:var(--muted); background:var(--well); padding:8px 12px; border-radius:6px; margin-bottom:14px;">
+            📌 <b>Régime détecté :</b> ${cObj.note}
+          </div>
+
+          ${countryFieldsHtml}
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+            <button id="cancel-fiscal-btn" class="btn btn--subtle">Annuler</button>
+            <button id="save-fiscal-btn" class="btn btn--primary" style="display:flex; align-items:center; gap:6px;">
+              <span>💾</span> Enregistrer la Localisation
+            </button>
+          </div>
+        </dialog>
+      `;
+
+      // Event handlers
+      modal.querySelector('#close-fiscal-modal-btn').onclick = closeAllModals;
+      modal.querySelector('#cancel-fiscal-btn').onclick = closeAllModals;
+
+      const cSelect = modal.querySelector('#fiscal-country-select');
+      cSelect.onchange = (e) => {
+        selectedCountry = e.target.value;
+        const matching = COUNTRIES.find(c => c.code === selectedCountry);
+        if (matching) selectedCurrency = matching.curr;
+        render();
+      };
+
+      const currSelect = modal.querySelector('#fiscal-currency-select');
+      currSelect.onchange = (e) => {
+        selectedCurrency = e.target.value;
+      };
+
+      const saveBtn = modal.querySelector('#save-fiscal-btn');
+      saveBtn.onclick = async () => {
+        saveBtn.disabled = true;
+        saveBtn.innerText = 'Enregistrement...';
+
+        const updatedFiscalData = { ...fiscalData };
+        if (selectedCountry === 'DZ') {
+          updatedFiscalData.nif = modal.querySelector('#fiscal-nif')?.value || '';
+          updatedFiscalData.nis = modal.querySelector('#fiscal-nis')?.value || '';
+          updatedFiscalData.rc = modal.querySelector('#fiscal-rc')?.value || '';
+          updatedFiscalData.ai = modal.querySelector('#fiscal-ai')?.value || '';
+        } else if (selectedCountry === 'TN') {
+          updatedFiscalData.matricule_fiscal = modal.querySelector('#fiscal-mf')?.value || '';
+          updatedFiscalData.rne = modal.querySelector('#fiscal-rne')?.value || '';
+        } else if (selectedCountry === 'MA') {
+          updatedFiscalData.ice = modal.querySelector('#fiscal-ice')?.value || '';
+          updatedFiscalData.identifiant_fiscal = modal.querySelector('#fiscal-if')?.value || '';
+        }
+
+        try {
+          const res = await fetch(`/api/tenants/${t.id}/fiscal-profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              country: selectedCountry,
+              currency: selectedCurrency,
+              fiscalData: updatedFiscalData
+            })
+          }).then(r => r.json());
+
+          if (res && res.success) {
+            t.country = selectedCountry;
+            t.currency = selectedCurrency;
+            t.fiscalData = updatedFiscalData;
+
+            // Si c'est l'Algérie ou la Tunisie et que la langue est encore par défaut, proposer l'Arabe
+            if ((selectedCountry === 'DZ' || selectedCountry === 'TN') && typeof window.setMarloLanguage === 'function') {
+              if (localStorage.getItem('marlo:lang') !== 'ar') {
+                window.setMarloLanguage('ar');
+              }
+            }
+
+            // Rafraîchir les stores et vues
+            window.dispatchEvent(new CustomEvent('marlo:tenant-changed', { detail: { tenant: t } }));
+            closeAllModals();
+            showToast(`Localisation configurée : ${selectedCountry} (${selectedCurrency}) !`);
+          } else {
+            alert('Erreur lors de la sauvegarde du profil fiscal.');
+            saveBtn.disabled = false;
+            saveBtn.innerText = 'Enregistrer';
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Erreur réseau lors de la mise à jour.');
+          saveBtn.disabled = false;
+          saveBtn.innerText = 'Enregistrer';
+        }
+      };
+    };
+
+    render();
+    document.body.appendChild(modal);
+  }
+
   function closeAllModals() {
     const newTenant = document.getElementById('erp-new-tenant-modal');
     if (newTenant) newTenant.remove();
     const dropdown = document.getElementById('erp-tenant-dropdown');
     if (dropdown) dropdown.remove();
+    const fiscalModal = document.getElementById('erp-fiscal-modal');
+    if (fiscalModal) fiscalModal.remove();
   }
 
   function showToast(msg) {

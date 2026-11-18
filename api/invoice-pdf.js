@@ -12,8 +12,31 @@ const EDGE_PATH = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge
 
 function formatMoney(amount, currency = 'EUR') {
   const num = Number(amount) || 0;
-  const symbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : '€';
-  return `${num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${symbol}`;
+  const curr = (currency || 'EUR').toUpperCase();
+  const decimals = curr === 'TND' ? 3 : 2;
+
+  let symbol = '€';
+  let isPrefix = false;
+
+  switch (curr) {
+    case 'DZD': symbol = 'د.ج'; break;
+    case 'TND': symbol = 'د.ت'; break;
+    case 'MAD': symbol = 'د.م.'; break;
+    case 'USD': symbol = '$'; isPrefix = true; break;
+    case 'GBP': symbol = '£'; isPrefix = true; break;
+    case 'CHF': symbol = 'CHF'; break;
+    case 'CAD': symbol = 'CA$'; isPrefix = true; break;
+    case 'AED': symbol = 'د.إ'; break;
+    case 'SAR': symbol = 'ر.س'; break;
+    default: symbol = '€'; break;
+  }
+
+  const formattedNum = num.toLocaleString('fr-FR', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+
+  return isPrefix ? `${symbol} ${formattedNum}` : `${formattedNum} ${symbol}`;
 }
 
 function formatDate(timestamp) {
@@ -31,20 +54,22 @@ function renderInvoiceHtml(tenant, item, options = {}) {
   const docType = isQuote ? 'DEVIS' : 'FACTURE';
   const docColor = isQuote ? '#0284c7' : '#ea580c';
   const curr = tenant.currency || 'EUR';
+  const country = (tenant.country || (curr === 'DZD' ? 'DZ' : curr === 'TND' ? 'TN' : curr === 'MAD' ? 'MA' : 'FR')).toUpperCase();
+  const fiscal = tenant.fiscalData || {};
 
   // Coordonnées de l'entreprise émettrice
   const company = {
     name: tenant.name || 'Entreprise Marlo',
     industry: tenant.industry || 'Entreprise Générale',
-    siret: tenant.siret || '849 203 912 00024',
-    vatNumber: tenant.vatNumber || 'FR 32 849203912',
-    rcs: tenant.rcs || 'RCS Paris B 849 203 912',
-    address: tenant.address || '14 Rue de la Paix, 75002 Paris, France',
+    siret: fiscal.nif || tenant.siret || '849 203 912 00024',
+    vatNumber: fiscal.vatNumber || fiscal.matricule_fiscal || tenant.vatNumber || 'FR 32 849203912',
+    rcs: fiscal.rc || tenant.rcs || 'RCS Paris B 849 203 912',
+    address: tenant.address || (country === 'DZ' ? 'Didouche Mourad, 16000 Alger, Algérie' : country === 'TN' ? 'Avenue Habib Bourguiba, 1001 Tunis, Tunisie' : '14 Rue de la Paix, 75002 Paris, France'),
     email: tenant.ownerEmail || `contact@${tenant.slug || 'entreprise'}.com`,
-    phone: tenant.phone || '+33 (0)1 42 68 55 00',
-    iban: tenant.iban || 'FR76 3000 4000 5000 1234 5678 901',
-    bic: tenant.bic || 'BNPAFRPPXXX',
-    bank: tenant.bankName || 'BNP Paribas - Agence Centrale'
+    phone: tenant.phone || (country === 'DZ' ? '+213 (0)21 63 00 00' : country === 'TN' ? '+216 71 123 456' : '+33 (0)1 42 68 55 00'),
+    iban: tenant.iban || (country === 'DZ' ? 'DZ00 0010 0000 1234 5678 9012' : country === 'TN' ? 'TN59 1000 0000 1234 5678 9012' : 'FR76 3000 4000 5000 1234 5678 901'),
+    bic: tenant.bic || (country === 'DZ' ? 'BNAFDZALXXX' : country === 'TN' ? 'BTKNTNTTXXX' : 'BNPAFRPPXXX'),
+    bank: tenant.bankName || (country === 'DZ' ? 'Banque Nationale d\'Algérie (BNA)' : country === 'TN' ? 'Banque de Tunisie (BT)' : 'BNP Paribas - Agence Centrale')
   };
 
   // Coordonnées du client destinataire
@@ -515,8 +540,14 @@ function renderInvoiceHtml(tenant, item, options = {}) {
           </div>
           <div class="company-details">
             ${company.address}<br>
-            SIRET : <b>${company.siret}</b> · ${company.rcs}<br>
-            TVA Intracommunautaire : <b>${company.vatNumber}</b><br>
+            ${country === 'DZ' 
+              ? `NIF : <b>${fiscal.nif || company.siret}</b> · NIS : <b>${fiscal.nis || '000116012345678'}</b><br>RC : <b>${fiscal.rc || company.rcs}</b> · AI : <b>${fiscal.ai || '16012345678'}</b>`
+              : country === 'TN'
+              ? `Matricule Fiscal : <b>${fiscal.matricule_fiscal || company.vatNumber}</b> · RNE : <b>${fiscal.rne || company.rcs}</b>`
+              : country === 'MA'
+              ? `ICE : <b>${fiscal.ice || '001234567000089'}</b> · IF : <b>${fiscal.identifiant_fiscal || '12345678'}</b><br>RC : <b>${fiscal.rc || company.rcs}</b>`
+              : `SIRET : <b>${company.siret}</b> · ${company.rcs}<br>TVA Intracommunautaire : <b>${company.vatNumber}</b>`
+            }<br>
             Email : ${company.email} · Tél : ${company.phone}
           </div>
         </div>
@@ -649,10 +680,15 @@ function renderInvoiceHtml(tenant, item, options = {}) {
 
       <!-- Mentions légales de conformité fiscale -->
       <footer class="footer">
-        <b>Conditions de règlement :</b> Paiement à 30 jours nets. Aucun escompte accordé pour paiement anticipé.<br>
-        En cas de retard de paiement, une pénalité au taux de 3 fois le taux d'intérêt légal sera exigible de plein droit,
-        ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 € (art. D.441-5 du Code de Commerce).<br>
-        ${company.name} · ${company.rcs} · SIRET : ${company.siret} · TVA : ${company.vatNumber}
+        <b>Conditions de règlement :</b> Paiement à 30 jours nets.<br>
+        ${country === 'DZ'
+          ? `Facture établie conformément au Système Comptable Financier (SCF) et au Code des Taxes sur le Chiffre d'Affaires algérien.<br>${company.name} · RC : ${fiscal.rc || company.rcs} · NIF : ${fiscal.nif || company.siret} · NIS : ${fiscal.nis || '000116012345678'}`
+          : country === 'TN'
+          ? `Facture soumise au droit de timbre fiscal tunisien (1.000 TND) et au Système Comptable des Entreprises (SCE).<br>${company.name} · Matricule Fiscal : ${fiscal.matricule_fiscal || company.vatNumber}`
+          : country === 'MA'
+          ? `Facture conforme à l'article 145 du CGI marocain.<br>${company.name} · ICE : ${fiscal.ice || '001234567000089'} · IF : ${fiscal.identifiant_fiscal || '12345678'} · RC : ${fiscal.rc || company.rcs}`
+          : `En cas de retard de paiement, une pénalité au taux de 3 fois le taux d'intérêt légal sera exigible de plein droit, ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 €.<br>${company.name} · ${company.rcs} · SIRET : ${company.siret} · TVA : ${company.vatNumber}`
+        }
       </footer>
 
     </article>
