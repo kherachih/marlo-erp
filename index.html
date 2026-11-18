@@ -16,11 +16,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400..700&display=swap" rel="stylesheet" />
   <script>
     window.addEventListener('error', function(e) {
+      console.error('[CRITICAL RUNTIME ERROR]:', e);
       fetch('/api/client-error', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: e.message, filename: e.filename, lineno: e.lineno, colno: e.colno, stack: e.error ? e.error.stack : null })
       }).catch(function(){});
+
+      // If root is still empty after 1 second, display friendly recovery UI instead of black screen
+      setTimeout(function() {
+        var root = document.getElementById('root');
+        if (root && (!root.children || root.children.length === 0)) {
+          root.innerHTML = '<div style="position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#0f172a; color:#f8fafc; font-family:system-ui,-apple-system,sans-serif; padding:20px; z-index:999999;">' +
+            '<div style="max-width:480px; text-align:center; background:#1e293b; padding:32px; border-radius:16px; border:1px solid #334155; box-shadow:0 20px 40px rgba(0,0,0,0.5);">' +
+            '<div style="font-size:36px; margin-bottom:12px;">⚡</div>' +
+            '<h2 style="margin:0 0 8px 0; font-size:20px; font-weight:700;">Mise à jour de votre espace Marlo</h2>' +
+            '<p style="color:#94a3b8; font-size:14px; line-height:1.5; margin:0 0 24px 0;">Une mise à jour des modules a été déployée. Pour appliquer les modifications et réinitialiser les données locales :</p>' +
+            '<button onclick="localStorage.clear(); location.reload();" style="background:#f29b23; color:#1c1304; border:none; padding:12px 24px; font-weight:700; border-radius:8px; cursor:pointer; font-size:14px;">Actualiser et Charger l\'application →</button>' +
+            '</div></div>';
+        }
+      }, 800);
     });
     window.addEventListener('unhandledrejection', function(e) {
       fetch('/api/client-error', {

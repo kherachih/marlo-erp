@@ -722,7 +722,25 @@
           "cat": "sales"
         }
       ],
-      "threads": [],
+      "threads": [
+        {
+          "id": "m1",
+          "subject": "Validation du planning VFX & Rendu",
+          "projectId": "p1",
+          "with": "c-vortex",
+          "read": false,
+          "starred": true,
+          "archived": false,
+          "messages": [
+            {
+              "id": "a",
+              "who": "dara",
+              "t": 1794877773761,
+              "body": "Bonjour Alexandre, nous avons bien reçu le devis signé."
+            }
+          ]
+        }
+      ],
       "logs": [],
       "activity": [
         {
@@ -1274,7 +1292,53 @@
           "aiConfidence": 94,
           "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard"
         }
-      ]
+      ],
+      "notices": [
+        {
+          "id": "n1",
+          "t": 1794960573761,
+          "tone": "accent",
+          "icon": "chat",
+          "title": "Nouveau message client",
+          "body": "Lumina Studio a confirmé le planning de la semaine.",
+          "read": false,
+          "href": "inbox"
+        },
+        {
+          "id": "n2",
+          "t": 1794956973761,
+          "tone": "good",
+          "icon": "check",
+          "title": "Devis signé",
+          "body": "Vortex Gaming Studio a signé le devis DEV-2026-003.",
+          "read": false,
+          "href": "crm"
+        },
+        {
+          "id": "n3",
+          "t": 1794949773761,
+          "tone": "info",
+          "icon": "receipt",
+          "title": "Facture en attente",
+          "body": "Facture FAC-2026-001 de 9 100 € à encaisser.",
+          "read": true,
+          "href": "budget"
+        }
+      ],
+      "contacts": {
+        "c-lumina": {
+          "name": "Éléonore de La Tour",
+          "org": "Lumina Studio"
+        },
+        "c-vortex": {
+          "name": "Alexandre Dupuis",
+          "org": "Vortex Gaming Studio"
+        },
+        "c-apex": {
+          "name": "Marc Vaneck",
+          "org": "Apex Brands"
+        }
+      }
     },
     "northbank-post": {
       "version": 1,
@@ -1970,7 +2034,25 @@
           "cat": "sales"
         }
       ],
-      "threads": [],
+      "threads": [
+        {
+          "id": "m1",
+          "subject": "Validation du planning VFX & Rendu",
+          "projectId": "p1",
+          "with": "c-vortex",
+          "read": false,
+          "starred": true,
+          "archived": false,
+          "messages": [
+            {
+              "id": "a",
+              "who": "dara",
+              "t": 1794877773761,
+              "body": "Bonjour Alexandre, nous avons bien reçu le devis signé."
+            }
+          ]
+        }
+      ],
       "logs": [],
       "activity": [
         {
@@ -2713,7 +2795,53 @@
           "reconciledAt": 1794951757197,
           "reconciledBy": "IA Rapprochement Automatisé"
         }
-      ]
+      ],
+      "notices": [
+        {
+          "id": "n1",
+          "t": 1794960573761,
+          "tone": "accent",
+          "icon": "chat",
+          "title": "Nouveau message client",
+          "body": "Lumina Studio a confirmé le planning de la semaine.",
+          "read": false,
+          "href": "inbox"
+        },
+        {
+          "id": "n2",
+          "t": 1794956973761,
+          "tone": "good",
+          "icon": "check",
+          "title": "Devis signé",
+          "body": "Vortex Gaming Studio a signé le devis DEV-2026-003.",
+          "read": false,
+          "href": "crm"
+        },
+        {
+          "id": "n3",
+          "t": 1794949773761,
+          "tone": "info",
+          "icon": "receipt",
+          "title": "Facture en attente",
+          "body": "Facture FAC-2026-001 de 9 100 € à encaisser.",
+          "read": true,
+          "href": "budget"
+        }
+      ],
+      "contacts": {
+        "c-lumina": {
+          "name": "Éléonore de La Tour",
+          "org": "Lumina Studio"
+        },
+        "c-vortex": {
+          "name": "Alexandre Dupuis",
+          "org": "Vortex Gaming Studio"
+        },
+        "c-apex": {
+          "name": "Marc Vaneck",
+          "org": "Apex Brands"
+        }
+      }
     },
     "atelier-design-co": {
       "version": 1,
@@ -3295,7 +3423,25 @@
           "cat": "sales"
         }
       ],
-      "threads": [],
+      "threads": [
+        {
+          "id": "m1",
+          "subject": "Validation du planning VFX & Rendu",
+          "projectId": "p1",
+          "with": "c-vortex",
+          "read": false,
+          "starred": true,
+          "archived": false,
+          "messages": [
+            {
+              "id": "a",
+              "who": "dara",
+              "t": 1794877773761,
+              "body": "Bonjour Alexandre, nous avons bien reçu le devis signé."
+            }
+          ]
+        }
+      ],
       "logs": [],
       "activity": [
         {
@@ -3847,7 +3993,53 @@
           "aiConfidence": 94,
           "aiReason": "Montant et date correspondant à la note de frais NDF-2026-001 de Camille Bernard"
         }
-      ]
+      ],
+      "notices": [
+        {
+          "id": "n1",
+          "t": 1794960573761,
+          "tone": "accent",
+          "icon": "chat",
+          "title": "Nouveau message client",
+          "body": "Lumina Studio a confirmé le planning de la semaine.",
+          "read": false,
+          "href": "inbox"
+        },
+        {
+          "id": "n2",
+          "t": 1794956973761,
+          "tone": "good",
+          "icon": "check",
+          "title": "Devis signé",
+          "body": "Vortex Gaming Studio a signé le devis DEV-2026-003.",
+          "read": false,
+          "href": "crm"
+        },
+        {
+          "id": "n3",
+          "t": 1794949773761,
+          "tone": "info",
+          "icon": "receipt",
+          "title": "Facture en attente",
+          "body": "Facture FAC-2026-001 de 9 100 € à encaisser.",
+          "read": true,
+          "href": "budget"
+        }
+      ],
+      "contacts": {
+        "c-lumina": {
+          "name": "Éléonore de La Tour",
+          "org": "Lumina Studio"
+        },
+        "c-vortex": {
+          "name": "Alexandre Dupuis",
+          "org": "Vortex Gaming Studio"
+        },
+        "c-apex": {
+          "name": "Marc Vaneck",
+          "org": "Apex Brands"
+        }
+      }
     }
   }
 }

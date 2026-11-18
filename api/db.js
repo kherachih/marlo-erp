@@ -1160,6 +1160,8 @@ function generateStarterDataForTenant(tenant) {
       { id: 'tx-1', t: now - 2 * day, kind: 'in', amount: invoices[0].amount, desc: `Règlement ${invoices[0].number} - ${invoices[0].client}`, cat: 'sales' }
     ],
     threads: [],
+    notices: [],
+    contacts: {},
     logs: [],
     activity: [
       { id: 'act-1', t: now, who: 'owner', what: `a initialisé l'espace ERP pour ${tenant.name}`, icon: 'sparkle', href: 'overview' }
